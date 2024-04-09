@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".Ingresos">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutDiario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+            <View
+                android:id="@+id/dona1"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:background="@drawable/dona_gris"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/diario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/dona1"
+                app:layout_constraintTop_toTopOf="@id/dona1"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:text="@string/Diario"
+                style="@style/TxtVerdeGrande"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutDiario2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:layout_constraintTop_toBottomOf="@id/diario"
+                app:layout_constraintStart_toEndOf="@id/dona1"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutSemanal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/layoutDiario"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+            <View
+                android:id="@+id/dona2"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:background="@drawable/dona_gris"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/semanal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/dona2"
+                app:layout_constraintTop_toTopOf="@id/dona2"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:text="@string/semanal"
+                style="@style/TxtVerdeGrande"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutSemanal2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:layout_constraintTop_toBottomOf="@id/semanal"
+                app:layout_constraintStart_toEndOf="@id/dona2"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutMensual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/layoutSemanal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+            <View
+                android:id="@+id/dona3"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:background="@drawable/dona_gris"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/mensual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/dona3"
+                app:layout_constraintTop_toTopOf="@id/dona3"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:text="@string/mensual"
+                style="@style/TxtVerdeGrande"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutMensual2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:layout_constraintTop_toBottomOf="@id/mensual"
+                app:layout_constraintStart_toEndOf="@id/dona3"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutAnual"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/layoutMensual"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+            <View
+                android:id="@+id/dona4"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:background="@drawable/dona_gris"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"/>
+
+            <TextView
+                android:id="@+id/anual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/dona4"
+                app:layout_constraintTop_toTopOf="@id/dona4"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="16dp"
+                android:text="@string/anual"
+                style="@style/TxtVerdeGrande"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutAnual2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                app:layout_constraintTop_toBottomOf="@id/anual"
+                app:layout_constraintStart_toEndOf="@id/dona4"
+                app:layout_constraintEnd_toEndOf="parent"
+                >
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

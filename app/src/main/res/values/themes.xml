@@ -5,7 +5,7 @@
         <item name="textInputStyle">@style/EstiloInput</item>
         <item name="colorPrimary">@color/verde_claro</item>
         <item name="colorPrimaryDark">@color/verde_oscuro</item>
-        <item name="colorAccent">@color/amarillo_claro</item>
+        <item name="colorAccent">@color/amarillo_oscuro</item>
         <!-- enable window content transitions -->
         <item name="android:windowActivityTransitions">true</item>
 
@@ -33,6 +33,12 @@
         <item name="android:background">@drawable/bg_btn_borde_verde</item>
         <item name="android:textColor">@color/verde_oscuro</item>
         <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="TxtAmarilloGrandeNegrita">
+        <item name="android:textColor">@color/amarillo_oscuro</item>
+        <item name="android:textSize">36sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TxtVerdeGrandeNegrita">
@@ -140,35 +146,53 @@
     </style>
 
 
-
-    <style name="Theme.NavigationDrawer" parent=
-        "Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.NavigationDrawer" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/verde_claro</item>
         <item name="colorPrimaryVariant">
-            @color/verde_oscuro</item>
+            @color/verde_oscuro
+        </item>
         <item name="colorOnPrimary">@color/blanco</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/amarillo_claro</item>
         <item name="colorSecondaryVariant">
-            @color/amarillo_oscuro</item>
+            @color/amarillo_oscuro
+        </item>
         <item name="colorOnSecondary">@color/texto1</item>
         <!-- Status bar color. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <!-- Customize your theme here. -->
     </style>
+
     <style name="Theme.NavigationDrawer.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <style name="Theme.NavigationDrawer.AppBarOverlay"
-        parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="Theme.NavigationDrawer.PopupOverlay"
-        parent="ThemeOverlay.AppCompat.Light" />
-    <style name="button_card" parent=
-        "Widget.MaterialComponents.Button.OutlinedButton">
+
+    <style name="Theme.NavigationDrawer.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.NavigationDrawer.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="button_card" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="strokeColor">@color/verde_oscuro</item>
         <item name="strokeWidth">2dp</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.NavigationViewTextStyle" parent="TextAppearance.AppCompat">
+        <!-- Modifica el color, tamaño, etc., según tus preferencias -->
+        <item name="android:textColor">@color/texto2</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>

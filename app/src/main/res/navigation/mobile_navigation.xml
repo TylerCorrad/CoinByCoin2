@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_dashboard">
+
+    <fragment
+        android:id="@+id/nav_dashboard"
+        android:name="com.example.coinbycoin.DashboardFragment"
+        android:label="@string/dashboard"
+        tools:layout="@layout/fragment_dashboard" />
+
+    <fragment
+        android:id="@+id/nav_perfil"
+        android:name="com.example.coinbycoin.Perfil"
+        android:label="@string/perfil"
+        tools:layout="@layout/fragment_perfil" />
+
+    <fragment
+        android:id="@+id/nav_reporte"
+        android:name="com.example.coinbycoin.Reporte"
+        android:label="@string/reporte"
+        tools:layout="@layout/fragment_reporte" />
+
+
+    <fragment
+        android:id="@+id/nav_ingresos"
+        android:name="com.example.coinbycoin.Ingresos"
+        android:label="@string/ingresos"
+        tools:layout="@layout/fragment_ingresos" />
+
+
+</navigation>
