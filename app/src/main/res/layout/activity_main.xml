@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <FrameLayout
+        android:id="@+id/circulo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:src="@drawable/coin"
+            android:scaleType="centerCrop"
+            android:padding="30dp"
+            android:background="@drawable/circulo"
+            android:contentDescription="@string/desc_logo" /> <!-- Establece un fondo circular -->
+    </FrameLayout>
+
+<TextView
+    android:id="@+id/txt_inicio"
+    app:layout_constraintTop_toBottomOf="@id/circulo"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/app_name"
+    style="@style/TxtAmarilloGrandeNegrita"
+    android:layout_marginVertical="30dp"/>
+
+    <Button
+        android:id="@+id/btnLogin"
+        style="@style/EstiloBtnVerde"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="128dp"
+        android:text="@string/login"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@id/txt_inicio"
+        app:layout_constraintStart_toStartOf="@id/txt_inicio"
+        app:layout_constraintEnd_toEndOf="@id/txt_inicio" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
