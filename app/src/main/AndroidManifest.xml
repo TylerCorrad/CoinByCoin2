@@ -13,11 +13,6 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31" >
         <activity
-            android:name=".Dashboard2"
-            android:exported="false"
-            android:label="@string/title_activity_dashboard2"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".Dashboard"
             android:exported="false"
             android:label="@string/title_activity_dashboard"
