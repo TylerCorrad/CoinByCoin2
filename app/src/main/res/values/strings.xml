@@ -72,4 +72,5 @@
     <string name="desc_logo">imagen de una moneda en blanco con fondo amarillo</string>
     <string name="desc_usuario">Silueta simplificada de una persona</string>
     <string name="desc_mas">simbolo de mas</string>
+    <string name="title_activity_dashboard2">Dashboard2</string>
 </resources>
