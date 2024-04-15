@@ -12,6 +12,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import com.example.coinbycoin.databinding.ActivityDashboardBinding
 
 class Dashboard : AppCompatActivity() {
@@ -27,29 +30,31 @@ class Dashboard : AppCompatActivity() {
 
         setSupportActionBar(binding.appBarDashboard.toolbar)
 
-
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
-        val navController = findNavController(R.id.nav_host_fragment_content_dashboard)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_dashboard, R.id.nav_perfil, R.id.nav_ingresos, R.id.nav_reporte
-            ), drawerLayout
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as
+                NavHostFragment
+        val navController = navHostFragment.navController
+        // Definir los destinos de nivel superior del menú de hamburguesa
+        appBarConfiguration = AppBarConfiguration(setOf(
+                R.id.nav_dashboard, R.id.nav_perfil, R.id.nav_ingresos, R.id.nav_reporte), drawerLayout
         )
-        setupActionBarWithNavController(navController, appBarConfiguration)
+
+        // Configurar la ActionBar para que cambie con el NavController
+        setupActionBarWithNavController(navController,appBarConfiguration)
+        // Configurar el NavigationView para que navegue con el NavController
         navView.setupWithNavController(navController)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflar el menú; esto agrega elementos a la ActionBar si está presente.
         menuInflater.inflate(R.menu.dashboard, menu)
         return true
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_dashboard)
+        val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
@@ -61,9 +66,7 @@ class Dashboard : AppCompatActivity() {
                 finish()
                 true
             }
-
             else -> super.onOptionsItemSelected(item)
         }
     }
-
 }
