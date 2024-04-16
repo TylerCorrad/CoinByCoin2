@@ -1,5 +1,7 @@
 package com.example.coinbycoin
 
+import android.app.DatePickerDialog
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -48,10 +50,13 @@ class DashboardFragment : Fragment() {
             val editTextFecha = dialogView.findViewById<EditText>(R.id.editTextFecha)
             val editTextDescripcion = dialogView.findViewById<EditText>(R.id.editTextDescripcion)
 
+            editTextFecha.setOnClickListener {
+                showDatePickerDialog(editTextFecha)
+            }
+
             val dialog = AlertDialog.Builder(requireContext())
                 .setView(dialogView)
                 .setPositiveButton("Guardar") { dialog, _ ->
-                    // Aquí puedes obtener los valores ingresados por el usuario y realizar las acciones necesarias
                     val categoria = spinnerCategoria.selectedItem.toString()
                     val cantidad = editTextCantidad.text.toString()
                     val fecha = editTextFecha.text.toString()
@@ -69,9 +74,26 @@ class DashboardFragment : Fragment() {
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // Limpiar la referencia al enlace de datos para evitar fugas de memoria
-        _binding = null
+    private fun showDatePickerDialog(editTextFecha: EditText) {
+        // Obtener la fecha actual
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+
+        // Crear y mostrar el DatePickerDialog
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+                // Aquí obtienes la fecha seleccionada y la estableces en el EditText
+                val fechaSeleccionada = "$dayOfMonth/${monthOfYear + 1}/$year"
+                editTextFecha.setText(fechaSeleccionada)
+            },
+            year,
+            month,
+            dayOfMonth
+        )
+
+        datePickerDialog.show()
     }
 }

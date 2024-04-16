@@ -49,4 +49,10 @@
         android:background="@drawable/bg_btn_borde_amarillo"
         android:layout_margin="8dp"/>
 
+    <TextView
+        android:id="@+id/txtAdvertencia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TxtVerdePequenoItalic"/>
+
 </LinearLayout>
