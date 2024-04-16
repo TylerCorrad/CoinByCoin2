@@ -142,7 +142,8 @@
     <style name="EstiloEditText">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">italic</item>
-        <item name="android:textColor">@color/texto1</item>
+        <item name="android:textColor">@color/texto2</item>
+        <item name="hintAnimationEnabled">false</item>
     </style>
 
 

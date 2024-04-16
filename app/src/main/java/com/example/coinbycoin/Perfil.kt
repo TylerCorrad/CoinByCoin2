@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import com.example.coinbycoin.databinding.FragmentPerfilBinding
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -103,8 +105,43 @@ class Perfil : Fragment() {
         }
 
         btnCambiarCon.setOnClickListener {
+            val dialogView = layoutInflater.inflate(R.layout.dialog_cambiar_con, null)
+            val conActual = dialogView.findViewById<TextInputEditText>(R.id.txtinputConActual)
+            val nuevaCon = dialogView.findViewById<TextInputEditText>(R.id.txtinputNuevaCon)
+            val confCon = dialogView.findViewById<TextInputEditText>(R.id.txtinputConfCon)
+            val tvError = dialogView.findViewById<TextView>(R.id.tvError)
 
+            val dialog = AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .setPositiveButton("Confirmar") { dialog, _ ->
+                    // Aquí puedes validar la contraseña actual y las nuevas contraseñas
+                    val contrasena = conActual.text.toString()
+                    val nuevaContrasena = nuevaCon.text.toString()
+                    val confirmarContrasena = confCon.text.toString()
+                    val regex = Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}\$")
+
+                    if (!regex.matches(nuevaContrasena)) {
+                        tvError.text = getString(R.string.requerimientos_cont)
+                        tvError.visibility = View.VISIBLE
+                    }
+                    else if (nuevaContrasena != confirmarContrasena) {
+                            tvError.text = getString(R.string.las_contrase_as_no_coinciden)
+                            tvError.visibility = View.VISIBLE
+                    }
+                    else {
+                            // Lógica para confirmar que la contraseña actual coincide con la del usuario
+                            dialog.dismiss()
+                        }
+                    }
+
+                .setNegativeButton("Cancelar") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .create()
+
+            dialog.show()
         }
+
     }
 
     override fun onDestroyView() {

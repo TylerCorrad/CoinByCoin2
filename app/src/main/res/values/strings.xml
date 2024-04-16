@@ -56,4 +56,21 @@
     <string name="desc_usuario">Silueta simplificada de una persona</string>
     <string name="desc_mas">simbolo de mas</string>
     <string name="title_activity_dashboard2">Dashboard2</string>
+    <string name="contrase_a_actual">Contraseña actual</string>
+    <string name="nueva_contrase_a">Nueva contraseña</string>
+    <string name="confirmar_nueva_contrase_a">Confirmar nueva contraseña</string>
+    <string name="las_contrase_as_no_coinciden">las contraseñas no coinciden</string>
+    <string name="requerimientos_cont">La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un carácter especial</string>
+    <string-array name="categorias">
+        <item>Gastos Varios</item>
+        <item>Alimentos</item>
+        <item>Transporte</item>
+        <item>Servicios</item>
+        <item>Mercado</item>
+    </string-array>
+
+    <string name="selec_cat">categoria</string>
+    <string name="cantidad">cantidad</string>
+    <string name="fecha">fecha</string>
+    <string name="descripcion">descripción</string>
 </resources>
