@@ -46,7 +46,7 @@ class Registro : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Aquí se debe poner la funcion para crear el usuario guardar los datos del usuario
+            // Aquí se debe poner la funcion para crear el usuario y guardar los datos del usuario
             val intent = Intent(this, Dashboard::class.java)
             startActivity(intent)
         }

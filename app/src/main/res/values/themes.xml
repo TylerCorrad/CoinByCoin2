@@ -70,6 +70,12 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="TxtVerdeMedianoItalic">
+        <item name="android:textColor">@color/verde_claro</item>
+        <item name="android:textSize">23sp</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
     <style name="TxtVerdeMedianoItalicNegrita">
         <item name="android:textColor">@color/verde_claro</item>
         <item name="android:textSize">30sp</item>

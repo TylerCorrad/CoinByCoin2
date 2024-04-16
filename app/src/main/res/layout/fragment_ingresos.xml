@@ -84,6 +84,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/contenedor_ingresos_mes"
             app:layout_constraintStart_toStartOf="parent"
+            android:clickable="true"
             >
             <ImageButton
                 android:id="@+id/botonCirculo"
@@ -153,6 +154,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/contenedor_ingresos_cas"
             app:layout_constraintStart_toStartOf="parent"
+            android:clickable="true"
             >
             <ImageButton
                 android:id="@+id/botonCirculo2"
