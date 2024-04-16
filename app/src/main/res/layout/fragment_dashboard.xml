@@ -76,7 +76,7 @@
                 android:layout_height="40dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@drawable/circulo"
+                android:background="@drawable/miscelaneo"
                 />
 
             <TextView
@@ -126,7 +126,7 @@
                 android:layout_height="40dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@drawable/circulo"
+                android:background="@drawable/alimentos"
                 />
 
             <TextView
@@ -177,7 +177,7 @@
                 android:layout_height="40dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@drawable/circulo"
+                android:background="@drawable/transporte"
                 />
 
             <TextView
@@ -227,7 +227,7 @@
                 android:layout_height="40dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@drawable/circulo"
+                android:background="@drawable/servicios"
                 />
 
             <TextView
@@ -277,7 +277,7 @@
                 android:layout_height="40dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@drawable/circulo"
+                android:background="@drawable/mercado"
                 />
 
             <TextView
@@ -329,7 +329,7 @@
                 android:layout_height="40dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@drawable/circulo"
+                android:background="@drawable/disponible"
                 />
 
             <TextView

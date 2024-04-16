@@ -1,5 +1,6 @@
 package com.example.coinbycoin
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.example.coinbycoin.databinding.FragmentPerfilBinding
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.textfield.TextInputEditText
 
 class Perfil : Fragment() {
@@ -53,6 +55,8 @@ class Perfil : Fragment() {
         telInputField.setText(usuario.NumeroTel)
 
         val btnGuardar = view.findViewById<Button>(R.id.btnGuardar)
+        val btnCambiarCon = view.findViewById<Button>(R.id.btnCambiarCon)
+        val btnBorrarPerf = view.findViewById<Button>(R.id.btnBorrarPerf)
 
         btnGuardar.setOnClickListener {
             // Verifica si alguno de los campos está vacío
@@ -78,6 +82,28 @@ class Perfil : Fragment() {
                 //aqui va el codigo para guardar la informacion
                 Toast.makeText(requireContext(), "Datos guardados exitosamente", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        btnBorrarPerf.setOnClickListener{
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Confirmación")
+            builder.setMessage("¿Estás seguro de que deseas borrar tu perfil?")
+            builder.setPositiveButton("Aceptar") { dialog, _ ->
+                // Código para borrar el perfil y volver a la actividad Login
+                val intent = Intent(requireContext(), Login::class.java)
+                startActivity(intent)
+                requireActivity().finish()
+                dialog.dismiss() // Cierra el diálogo después de aceptar
+            }
+            builder.setNegativeButton("Cancelar") { dialog, _ ->
+                dialog.dismiss() // Cierra el diálogo si se hace clic en Cancelar
+            }
+            val dialog = builder.create()
+            dialog.show()
+        }
+
+        btnCambiarCon.setOnClickListener {
+
         }
     }
 
