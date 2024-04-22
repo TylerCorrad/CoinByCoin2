@@ -2,6 +2,7 @@ package com.example.coinbycoin
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -38,9 +39,23 @@ class Perfil : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        data class InfoUsuario(var Nombres: String, var Apellidos: String, val Usuario: String, var Documento: String, var NumeroTel:String, var Email:String)
+        data class InfoUsuario(
+            var Nombres: String,
+            var Apellidos: String,
+            val Usuario: String,
+            var Documento: String,
+            var NumeroTel: String,
+            var Email: String
+        )
         //aqui se carga la informacion ya guardada del usuario
-        val usuario = InfoUsuario("Tyler", "Corradine Vargas", "Tyler47","1000611958", "3053224209", "tylercorrad@gmail.com" )
+        val usuario = InfoUsuario(
+            "Tyler",
+            "Corradine Vargas",
+            "Tyler47",
+            "1000611958",
+            "3053224209",
+            "tylercorrad@gmail.com"
+        )
 
         val usuarioInputField = view.findViewById<TextInputEditText>(R.id.txtinputUsuario)
         val nombreInputField = view.findViewById<TextInputEditText>(R.id.txtinputNombres)
@@ -79,14 +94,19 @@ class Perfil : Fragment() {
             // Si hay campos vacíos, muestra un mensaje
             if (camposVacios.isNotEmpty()) {
                 val camposFaltantes = camposVacios.joinToString(", ")
-                Toast.makeText(requireContext(), "Se deben llenar los campos: $camposFaltantes", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Se deben llenar los campos: $camposFaltantes",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 //aqui va el codigo para guardar la informacion
-                Toast.makeText(requireContext(), "Datos guardados exitosamente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Datos guardados exitosamente", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
-        btnBorrarPerf.setOnClickListener{
+        btnBorrarPerf.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("Confirmación")
             builder.setMessage("¿Estás seguro de que deseas borrar tu perfil?")
@@ -110,38 +130,49 @@ class Perfil : Fragment() {
             val nuevaCon = dialogView.findViewById<TextInputEditText>(R.id.txtinputNuevaCon)
             val confCon = dialogView.findViewById<TextInputEditText>(R.id.txtinputConfCon)
             val tvError = dialogView.findViewById<TextView>(R.id.tvError)
+            var hayError = false
 
             val dialog = AlertDialog.Builder(requireContext())
                 .setView(dialogView)
                 .setPositiveButton("Confirmar") { dialog, _ ->
-                    // Aquí puedes validar la contraseña actual y las nuevas contraseñas
                     val contrasena = conActual.text.toString()
                     val nuevaContrasena = nuevaCon.text.toString()
                     val confirmarContrasena = confCon.text.toString()
                     val regex = Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}\$")
 
+                    // anadir if con Lógica para confirmar que la contraseña actual coincide con la del usuario
                     if (!regex.matches(nuevaContrasena)) {
                         tvError.text = getString(R.string.requerimientos_cont)
                         tvError.visibility = View.VISIBLE
+                        val toast = Toast.makeText(requireContext(), "Requerimientos de contraseña no cumplidos", Toast.LENGTH_LONG) // in Activity
+                        toast.show()
+                        Log.d("MyApp", "Error: Requerimientos de contraseña no cumplidos")
+                        hayError = true
+                    } else if (nuevaContrasena != confirmarContrasena) {
+                        tvError.text = getString(R.string.las_contrase_as_no_coinciden)
+                        tvError.visibility = View.VISIBLE
+                        val toast = Toast.makeText(requireContext(), getString(R.string.las_contrase_as_no_coinciden), Toast.LENGTH_SHORT) // in Activity
+                        toast.show()
+                        Log.d("MyApp", "Error: Las contraseñas no coinciden")
+                        hayError = true
+                    } else if(!hayError){
+                        val toast = Toast.makeText(requireContext(), "la contraseña ha sido cambiada exitosamente", Toast.LENGTH_SHORT) // in Activity
+                        toast.show()
+                        Log.d("MyApp", "La contraseña ha sido cambiada exitosamente")
                     }
-                    else if (nuevaContrasena != confirmarContrasena) {
-                            tvError.text = getString(R.string.las_contrase_as_no_coinciden)
-                            tvError.visibility = View.VISIBLE
-                    }
-                    else {
-                            // Lógica para confirmar que la contraseña actual coincide con la del usuario
-                            dialog.dismiss()
-                        }
-                    }
-
+                }
                 .setNegativeButton("Cancelar") { dialog, _ ->
                     dialog.dismiss()
                 }
                 .create()
 
             dialog.show()
+            dialog.setOnDismissListener {
+                if (hayError) {
+                    hayError = false
+                }
+            }
         }
-
     }
 
     override fun onDestroyView() {
