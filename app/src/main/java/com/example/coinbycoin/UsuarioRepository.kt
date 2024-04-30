@@ -27,4 +27,12 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
     fun actualizarUsuario(usuarioId: Long, usuario: String, nombres: String, apellidos: String, documento: String, email: String, numeroTel: String) {
         usuarioDao.actualizarUsuario(usuarioId= usuarioId, usuario=usuario, nombres=nombres, apellidos=apellidos, documento=documento, email=email, numeroTel=numeroTel)
     }
+
+    fun eliminarUsuario(usuarioId: Long){
+        usuarioDao.eliminarUsuario(usuarioId)
+    }
+
+    fun cambiarContrasena(contrasena: String, usuarioId: Long){
+        usuarioDao.cambiarContrasena(contrasena = contrasena, usuarioId = usuarioId)
+    }
 }

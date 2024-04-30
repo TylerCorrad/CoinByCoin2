@@ -16,11 +16,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.coinbycoin.databinding.FragmentPerfilBinding
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class Perfil : Fragment() {
     private var usuarioId: Long = -1
+    private lateinit var sharedViewModel: SharedViewModel
     private lateinit var usuarioViewModel: UsuarioViewModel
     // Declaración de la variable de enlace
     private var _binding: FragmentPerfilBinding? = null
@@ -47,8 +50,8 @@ class Perfil : Fragment() {
         // Obtener el usuarioId del argumento
         val usuarioId = arguments?.getLong("usuario_id", -1)
         Log.d("PerfilFragment", "Usuario ID: $usuarioId")
-usuarioViewModel = ViewModelProvider(this).get(UsuarioViewModel::class.java)
-        val sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+        usuarioViewModel = ViewModelProvider(this).get(UsuarioViewModel::class.java)
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.idUsuario.observe(viewLifecycleOwner, Observer { usuarioId ->
             if (usuarioId != null) {
                 usuarioViewModel.getUsuarioPorId(usuarioId).observe(viewLifecycleOwner) { usuario ->
@@ -108,10 +111,10 @@ usuarioViewModel = ViewModelProvider(this).get(UsuarioViewModel::class.java)
                 val email = mailInputField.text.toString()
                 val numeroTel = telInputField.text.toString()
 
-
-                    sharedViewModel.idUsuario.observe(viewLifecycleOwner, Observer { usuarioId ->
-                    if (usuarioId != null) {
-                        lifecycleScope.launch {
+                sharedViewModel.idUsuario.value?.let { usuarioId ->
+                    lifecycleScope.launch {
+                        withContext(Dispatchers.IO) {
+                            // Ejecutar la operación de base de datos en un hilo separado
                             usuarioViewModel.actualizarUsuario(
                                 usuarioId,
                                 usuario,
@@ -123,19 +126,26 @@ usuarioViewModel = ViewModelProvider(this).get(UsuarioViewModel::class.java)
                             )
                         }
                     }
-                })
+                }
 
                 Toast.makeText(requireContext(), "Datos guardados exitosamente", Toast.LENGTH_SHORT)
                     .show()
             }
         }
 
+
         btnBorrarPerf.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("Confirmación")
             builder.setMessage("¿Estás seguro de que deseas borrar tu perfil?")
             builder.setPositiveButton("Aceptar") { dialog, _ ->
-                // Código para borrar el perfil y volver a la actividad Login
+                sharedViewModel.idUsuario.value?.let { usuarioId ->
+                    lifecycleScope.launch {
+                        withContext(Dispatchers.IO) {
+                            usuarioViewModel.eliminarUsuario(usuarioId)
+                        }
+                    }
+                }
                 val intent = Intent(requireContext(), Login::class.java)
                 startActivity(intent)
                 requireActivity().finish()
@@ -180,7 +190,14 @@ usuarioViewModel = ViewModelProvider(this).get(UsuarioViewModel::class.java)
                         Log.d("MyApp", "Error: Las contraseñas no coinciden")
                         hayError = true
                     } else if(!hayError){
-                        val toast = Toast.makeText(requireContext(), "la contraseña ha sido cambiada exitosamente", Toast.LENGTH_SHORT) // in Activity
+                        sharedViewModel.idUsuario.value?.let { usuarioId ->
+                            lifecycleScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    usuarioViewModel.cambiarContrasena(nuevaContrasena,usuarioId)
+                                }
+                            }
+                        }
+                                    val toast = Toast.makeText(requireContext(), "la contraseña ha sido cambiada exitosamente", Toast.LENGTH_SHORT) // in Activity
                         toast.show()
                         Log.d("MyApp", "La contraseña ha sido cambiada exitosamente")
                     }

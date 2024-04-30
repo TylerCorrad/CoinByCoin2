@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.lifecycle.LiveData
+import androidx.room.Delete
 
 @Dao
 interface UsuarioDao {
@@ -25,6 +26,12 @@ interface UsuarioDao {
 
     @Query("UPDATE Usuario SET usuario = :usuario, nombres = :nombres, apellidos = :apellidos, documento = :documento, correo = :email, telefono = :numeroTel WHERE id = :usuarioId")
     fun actualizarUsuario(usuarioId: Long, usuario: String, nombres: String, apellidos: String, documento: String, email: String, numeroTel: String)
+
+    @Query("DELETE FROM Usuario WHERE id = :usuarioId")
+    fun eliminarUsuario(usuarioId: Long)
+
+    @Query("UPDATE Usuario SET contrasena = :contrasena WHERE ID = :usuarioId")
+    fun cambiarContrasena(contrasena: String, usuarioId: Long)
 }
 
 @Dao

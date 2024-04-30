@@ -48,7 +48,6 @@ class UsuarioViewModel(application: Application) : AndroidViewModel(application)
     }
 
 
-
     fun getUltimoUsuarioId(): LiveData<Long> {
         return repository.getUltimoUsuarioId()
     }
@@ -59,5 +58,9 @@ class UsuarioViewModel(application: Application) : AndroidViewModel(application)
         )
 
 
-    // Otras funciones para operaciones CRUD según sea necesario
+    fun eliminarUsuario(usuarioId: Long) = repository.eliminarUsuario(usuarioId)
+
+    fun cambiarContrasena(contrasena: String, usuarioId: Long) = repository.cambiarContrasena(contrasena,usuarioId)
+
+
 }
