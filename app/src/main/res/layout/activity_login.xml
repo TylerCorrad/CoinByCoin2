@@ -98,15 +98,26 @@
                 android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+
+        <TextView
+            android:id="@+id/txtAdvertenciaLogin"
+            style="@style/TxtVerdePequenoItalic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintTop_toBottomOf ="@id/wrapperinputContrasena"
+            app:layout_constraintStart_toStartOf="parent"/>
+
         <Button
             android:id="@+id/btnIngresar"
             style="@style/EstiloBtnVerde"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:text="@string/ingresar"
             android:textSize="30sp"
-            app:layout_constraintTop_toBottomOf="@id/wrapperinputContrasena"
+            app:layout_constraintTop_toBottomOf="@id/txtAdvertenciaLogin"
             app:layout_constraintStart_toStartOf="@id/wrapperinputContrasena"
             app:layout_constraintEnd_toEndOf="@id/wrapperinputContrasena" />
 

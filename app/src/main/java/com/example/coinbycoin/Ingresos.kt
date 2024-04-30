@@ -24,6 +24,7 @@ import java.text.NumberFormat
 
 class Ingresos : Fragment() {
 
+    private var usuarioId: Long = -1
     interface Ingreso {
         val descripcion: String
         val valor: Int
@@ -47,6 +48,8 @@ class Ingresos : Fragment() {
         // Inflar el diseño del fragmento utilizando el enlace de datos generado
         _binding = FragmentIngresosBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        // Recuperar el ID del usuario del argumento
+        usuarioId = arguments?.getLong("usuario_id", -1) ?: -1
 
         // Devolver la vista raíz del diseño inflado
         return root
@@ -56,14 +59,17 @@ class Ingresos : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        val ingresosMensuales = listOf(
-            IngresoMensual("Salario", 1000000),
-            IngresoMensual("Renta Parqueadero", 150000),
+        // Creación de las listas mutables
+        val ingresosMensuales = mutableListOf<Ingreso>(
+            IngresoMensual("Salario", 2000),
+            IngresoMensual("Bonificación", 500),
+            IngresoMensual("Ingresos adicionales", 300)
         )
 
-        val ingresosCasuales = listOf(
-            IngresoCasual("Bono", 200000),
-            IngresoCasual("Venta Hummus", 150000)
+        val ingresosCasuales = mutableListOf<Ingreso>(
+            IngresoCasual("Venta de garaje", 100),
+            IngresoCasual("Trabajo temporal", 200),
+            IngresoCasual("Ingresos ocasionales", 150)
         )
 
         val totalIngresos =

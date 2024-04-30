@@ -18,6 +18,7 @@ class DashboardFragment : Fragment() {
 
     // Declaración de la variable de enlace
     private var _binding: FragmentDashboardBinding? = null
+    private var usuarioId: Long = -1
 
     // Esta propiedad es válida solo entre onCreateView y onDestroyView
     private val binding get() = _binding!!

@@ -13,10 +13,14 @@ import android.widget.TextView
 import com.example.coinbycoin.databinding.FragmentPerfilBinding
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.launch
 
 class Perfil : Fragment() {
-
+    private var usuarioId: Long = -1
+    private lateinit var usuarioViewModel: UsuarioViewModel
     // Declaración de la variable de enlace
     private var _binding: FragmentPerfilBinding? = null
 
@@ -31,6 +35,9 @@ class Perfil : Fragment() {
         // Inflar el diseño del fragmento utilizando el enlace de datos generado
         _binding = FragmentPerfilBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        // Recuperar el ID del usuario del argumento
+        val usuarioId = arguments?.getLong("usuario_id", -1)
+        Log.d("perfilFragment","id usuario $usuarioId")
 
         // Devolver la vista raíz del diseño inflado
         return root
@@ -39,23 +46,24 @@ class Perfil : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        data class InfoUsuario(
-            var Nombres: String,
-            var Apellidos: String,
-            val Usuario: String,
-            var Documento: String,
-            var NumeroTel: String,
-            var Email: String
-        )
-        //aqui se carga la informacion ya guardada del usuario
-        val usuario = InfoUsuario(
-            "Tyler",
-            "Corradine Vargas",
-            "Tyler47",
-            "1000611958",
-            "3053224209",
-            "tylercorrad@gmail.com"
-        )
+        usuarioViewModel = ViewModelProvider(this).get(UsuarioViewModel::class.java)
+
+
+        // Recuperar el ID del usuario del argumento
+        val usuarioId = arguments?.getLong("usuario_id", -1)
+        Log.d("perfilFragment","id usuario $usuarioId")
+        if (usuarioId != null) {
+            usuarioViewModel.getUsuarioPorId(usuarioId).observe(viewLifecycleOwner) { usuario ->
+                usuario?.let {
+                    binding.txtinputUsuario.setText(it.usuario)
+                    binding.txtinputNombres.setText(it.nombres)
+                    binding.txtinputApellidos.setText(it.apellidos)
+                    binding.txtinputDoc.setText(it.documento)
+                    binding.txtinputMail.setText(it.correo)
+                    binding.txtinputTel.setText(it.telefono)
+                }
+            }
+        }
 
         val usuarioInputField = view.findViewById<TextInputEditText>(R.id.txtinputUsuario)
         val nombreInputField = view.findViewById<TextInputEditText>(R.id.txtinputNombres)
@@ -63,13 +71,6 @@ class Perfil : Fragment() {
         val docInputField = view.findViewById<TextInputEditText>(R.id.txtinputDoc)
         val mailInputField = view.findViewById<TextInputEditText>(R.id.txtinputMail)
         val telInputField = view.findViewById<TextInputEditText>(R.id.txtinputTel)
-
-        usuarioInputField.setText(usuario.Usuario)
-        nombreInputField.setText(usuario.Nombres)
-        apellidoInputField.setText(usuario.Apellidos)
-        docInputField.setText(usuario.Documento)
-        mailInputField.setText(usuario.Email)
-        telInputField.setText(usuario.NumeroTel)
 
         val btnGuardar = view.findViewById<Button>(R.id.btnGuardar)
         val btnCambiarCon = view.findViewById<Button>(R.id.btnCambiarCon)
@@ -100,7 +101,18 @@ class Perfil : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
-                //aqui va el codigo para guardar la informacion
+                val usuario = usuarioInputField.text.toString()
+                val nombres = nombreInputField.text.toString()
+                val apellidos = apellidoInputField.text.toString()
+                val documento = docInputField.text.toString()
+                val email = mailInputField.text.toString()
+                val numeroTel = telInputField.text.toString()
+
+                lifecycleScope.launch {
+                    if (usuarioId != null) {
+                        usuarioViewModel.actualizarUsuario(usuarioId, usuario, nombres, apellidos, documento, email, numeroTel)
+                    }
+                }
                 Toast.makeText(requireContext(), "Datos guardados exitosamente", Toast.LENGTH_SHORT)
                     .show()
             }

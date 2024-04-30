@@ -4,11 +4,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
-
+import androidx.lifecycle.LiveData
+import java.util.Date
+import androidx.room.TypeConverter
 
 @Entity
 data class Usuario(
-    @PrimaryKey(autoGenerate = true) val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val usuario: String,
     val contrasena: String,
     val nombres: String,
@@ -20,9 +22,9 @@ data class Usuario(
 
 @Entity(foreignKeys = [ForeignKey(entity = Usuario::class, parentColumns = ["id"], childColumns = ["idUsuario"], onDelete = CASCADE)])
 data class Ingreso(
-    @PrimaryKey(autoGenerate = true) val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val descripcion: String,
-    val cantidad: Double,
+    val valor: Double,
     val fecha: String,
     val tipo: String,
     val idUsuario: Long
@@ -30,10 +32,12 @@ data class Ingreso(
 
 @Entity(foreignKeys = [ForeignKey(entity = Usuario::class, parentColumns = ["id"], childColumns = ["idUsuario"], onDelete = CASCADE)])
 data class Gasto(
-    @PrimaryKey(autoGenerate = true) val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val descripcion: String,
     val categoria: String,
     val fecha: String,
     val cantidad: Double,
     val idUsuario: Long
 )
+
+

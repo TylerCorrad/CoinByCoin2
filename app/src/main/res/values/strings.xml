@@ -73,4 +73,10 @@
     <string name="cantidad">cantidad</string>
     <string name="fecha">fecha</string>
     <string name="descripcion">descripción</string>
+    <string name="error_usuario_duplicado">Este nombre de usuario ya está en uso. Por favor, elija otro</string>
+    <string name="todos_los_campos_son_obligatorios">Todos los campos son obligatorios</string>
+    <string name="nombres_apellidos">Nombres Apellidos</string>
+    <string name="el_usuario_no_existe">el usuario no existe</string>
+    <string name="la_contrase_a_no_es_correcta_o_no_coincide">la contraseña no es correcta o no coincide</string>
+    <string name="error_al_obtener_el_id_del_usuario">Error al obtener el ID del usuario</string>
 </resources>

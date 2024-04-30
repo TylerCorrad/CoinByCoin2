@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.example.coinbycoin.databinding.FragmentReporteBinding
 
 class Reporte : Fragment() {
-
+    private var usuarioId: Long = -1
     // Declaración de la variable de enlace
     private var _binding: FragmentReporteBinding? = null
 
@@ -23,6 +23,8 @@ class Reporte : Fragment() {
         // Inflar el diseño del fragmento utilizando el enlace de datos generado
         _binding = FragmentReporteBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        // Recuperar el ID del usuario del argumento
+        usuarioId = arguments?.getLong("usuario_id", -1) ?: -1
 
         // Devolver la vista raíz del diseño inflado
         return root
