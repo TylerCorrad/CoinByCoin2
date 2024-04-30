@@ -52,7 +52,6 @@ class Dashboard : AppCompatActivity() {
         val bundle = Bundle().apply {
             putLong("usuario_id", usuarioId)
         }
-        navController.setGraph(R.navigation.mobile_navigation, bundle)
 
 
         Log.d("DashboarActivity", "Id Usuario: $usuarioId")
@@ -60,6 +59,7 @@ class Dashboard : AppCompatActivity() {
         setupActionBarWithNavController(navController,appBarConfiguration)
 // Configurar el NavigationView para que navegue con el NavController
         navView.setupWithNavController(navController)
+        navController.setGraph(R.navigation.mobile_navigation, bundle)
 
         usuarioViewModel = ViewModelProvider(this).get(UsuarioViewModel::class.java)
 
