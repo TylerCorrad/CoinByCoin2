@@ -6,23 +6,18 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
-import com.google.android.material.navigation.NavigationView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.room.Room
 import com.example.coinbycoin.databinding.ActivityDashboardBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.google.android.material.navigation.NavigationView
+
 
 class Dashboard : AppCompatActivity() {
 
@@ -49,17 +44,17 @@ class Dashboard : AppCompatActivity() {
                 R.id.nav_dashboard, R.id.nav_perfil, R.id.nav_ingresos, R.id.nav_reporte), drawerLayout
         )
         val usuarioId: Long = intent.getLongExtra("usuario_id", -1)
-        val bundle = Bundle().apply {
+        /*val bundle = Bundle().apply {
             putLong("usuario_id", usuarioId)
-        }
-
-
-        Log.d("DashboarActivity", "Id Usuario: $usuarioId")
+        }*/
+        Log.d("ActivityDashboard","IdUsuario: $usuarioId")
+        //navHostFragment.navController.setGraph(R.navigation.mobile_navigation, bundle)
+        val viewModel: SharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        viewModel.setUsuarioId(usuarioId)
 // Configurar la ActionBar para que cambie con el NavController
         setupActionBarWithNavController(navController,appBarConfiguration)
 // Configurar el NavigationView para que navegue con el NavController
         navView.setupWithNavController(navController)
-        navController.setGraph(R.navigation.mobile_navigation, bundle)
 
         usuarioViewModel = ViewModelProvider(this).get(UsuarioViewModel::class.java)
 

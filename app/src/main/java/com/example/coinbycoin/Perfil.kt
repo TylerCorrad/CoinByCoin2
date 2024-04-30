@@ -3,20 +3,21 @@ package com.example.coinbycoin
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
-import com.example.coinbycoin.databinding.FragmentPerfilBinding
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.coinbycoin.databinding.FragmentPerfilBinding
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
+
 
 class Perfil : Fragment() {
     private var usuarioId: Long = -1
@@ -35,9 +36,6 @@ class Perfil : Fragment() {
         // Inflar el diseño del fragmento utilizando el enlace de datos generado
         _binding = FragmentPerfilBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        // Recuperar el ID del usuario del argumento
-        val usuarioId = arguments?.getLong("usuario_id", -1)
-        Log.d("perfilFragment","id usuario $usuarioId")
 
         // Devolver la vista raíz del diseño inflado
         return root
@@ -46,24 +44,26 @@ class Perfil : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        usuarioViewModel = ViewModelProvider(this).get(UsuarioViewModel::class.java)
-
-
-        // Recuperar el ID del usuario del argumento
+        // Obtener el usuarioId del argumento
         val usuarioId = arguments?.getLong("usuario_id", -1)
-        Log.d("perfilFragment","id usuario $usuarioId")
-        if (usuarioId != null) {
-            usuarioViewModel.getUsuarioPorId(usuarioId).observe(viewLifecycleOwner) { usuario ->
-                usuario?.let {
-                    binding.txtinputUsuario.setText(it.usuario)
-                    binding.txtinputNombres.setText(it.nombres)
-                    binding.txtinputApellidos.setText(it.apellidos)
-                    binding.txtinputDoc.setText(it.documento)
-                    binding.txtinputMail.setText(it.correo)
-                    binding.txtinputTel.setText(it.telefono)
+        Log.d("PerfilFragment", "Usuario ID: $usuarioId")
+usuarioViewModel = ViewModelProvider(this).get(UsuarioViewModel::class.java)
+        val sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+        sharedViewModel.idUsuario.observe(viewLifecycleOwner, Observer { usuarioId ->
+            if (usuarioId != null) {
+                usuarioViewModel.getUsuarioPorId(usuarioId).observe(viewLifecycleOwner) { usuario ->
+                    usuario?.let {
+                        binding.txtinputUsuario.setText(it.usuario)
+                        binding.txtinputNombres.setText(it.nombres)
+                        binding.txtinputApellidos.setText(it.apellidos)
+                        binding.txtinputDoc.setText(it.documento)
+                        binding.txtinputMail.setText(it.correo)
+                        binding.txtinputTel.setText(it.telefono)
+                    }
                 }
             }
-        }
+        })
+
 
         val usuarioInputField = view.findViewById<TextInputEditText>(R.id.txtinputUsuario)
         val nombreInputField = view.findViewById<TextInputEditText>(R.id.txtinputNombres)
@@ -108,11 +108,23 @@ class Perfil : Fragment() {
                 val email = mailInputField.text.toString()
                 val numeroTel = telInputField.text.toString()
 
-                lifecycleScope.launch {
+
+                    sharedViewModel.idUsuario.observe(viewLifecycleOwner, Observer { usuarioId ->
                     if (usuarioId != null) {
-                        usuarioViewModel.actualizarUsuario(usuarioId, usuario, nombres, apellidos, documento, email, numeroTel)
+                        lifecycleScope.launch {
+                            usuarioViewModel.actualizarUsuario(
+                                usuarioId,
+                                usuario,
+                                nombres,
+                                apellidos,
+                                documento,
+                                email,
+                                numeroTel
+                            )
+                        }
                     }
-                }
+                })
+
                 Toast.makeText(requireContext(), "Datos guardados exitosamente", Toast.LENGTH_SHORT)
                     .show()
             }
