@@ -48,15 +48,19 @@ class UsuarioViewModel(application: Application) : AndroidViewModel(application)
     }
 
 
-
     fun getUltimoUsuarioId(): LiveData<Long> {
         return repository.getUltimoUsuarioId()
     }
 
-    suspend fun actualizarUsuario(usuarioId: Long, usuario: String, nombres: String, apellidos: String, documento: String, email: String, numeroTel: String) {
-        repository.actualizarUsuario(usuarioId, usuario, nombres, apellidos, documento, email, numeroTel)
-    }
+    fun actualizarUsuario(usuarioId: Long, usuario: String, nombres: String, apellidos: String, documento: String, email: String, numeroTel: String) =
+        repository.actualizarUsuario(
+            usuarioId, usuario, nombres, apellidos, documento, email, numeroTel
+        )
 
 
-    // Otras funciones para operaciones CRUD según sea necesario
+    fun eliminarUsuario(usuarioId: Long) = repository.eliminarUsuario(usuarioId)
+
+    fun cambiarContrasena(contrasena: String, usuarioId: Long) = repository.cambiarContrasena(contrasena,usuarioId)
+
+
 }

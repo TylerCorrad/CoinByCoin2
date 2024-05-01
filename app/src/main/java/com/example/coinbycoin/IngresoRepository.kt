@@ -16,4 +16,8 @@ class IngresoRepository(private val ingresoDao: IngresoDao) {
     fun getIngCasDeEsteMes(usuarioId: Long): LiveData<List<Ingreso>>{
         return ingresoDao.getIngMesDeEsteMes(usuarioId)
     }
+
+    fun getIngTotalDeEsteMes(usuarioId: Long): LiveData<Double>{
+        return ingresoDao.getIngTotalDeEsteMes(usuarioId)
+    }
 }

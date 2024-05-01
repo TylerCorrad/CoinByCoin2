@@ -3,6 +3,7 @@ package com.example.coinbycoin
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,26 +19,26 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.example.coinbycoin.ui.theme.CustomSpinnerAdapter
 import com.google.android.material.textfield.TextInputEditText
 import java.text.NumberFormat
+import kotlin.properties.Delegates
 
 class Ingresos : Fragment() {
 
     private var usuarioId: Long = -1
-    interface Ingreso {
-        val descripcion: String
-        val valor: Int
-    }
-    data class IngresoMensual(override val descripcion: String, override val valor: Int) : Ingreso
-
-    data class IngresoCasual(override val descripcion: String, override val valor: Int) : Ingreso
-
+    private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var ingresoViewModel: IngresoViewModel
+    // Creación de las listas mutables
+    private var ingresosMensuales: MutableList<Ingreso> = mutableListOf()
+    private var ingresosCasuales: MutableList<Ingreso> = mutableListOf()
+    private var totalIngresos :Double = 0.00
 
     // Declaración de la variable de enlace
     private var _binding: FragmentIngresosBinding? = null
 
-    // Esta propiedad es válida solo entre onCreateView y onDestroyView
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -45,107 +46,141 @@ class Ingresos : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflar el diseño del fragmento utilizando el enlace de datos generado
         _binding = FragmentIngresosBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        // Recuperar el ID del usuario del argumento
-        usuarioId = arguments?.getLong("usuario_id", -1) ?: -1
-
-        // Devolver la vista raíz del diseño inflado
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        ingresoViewModel = ViewModelProvider(this).get(IngresoViewModel::class.java)
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+        sharedViewModel.idUsuario.observe(viewLifecycleOwner, Observer { usuarioId ->
+            Log.d("FragmentIngresos", "id usuario: $usuarioId")
+            if (usuarioId != null) {
 
-        // Creación de las listas mutables
-        val ingresosMensuales = mutableListOf<Ingreso>(
-            IngresoMensual("Salario", 2000),
-            IngresoMensual("Bonificación", 500),
-            IngresoMensual("Ingresos adicionales", 300)
-        )
+                ingresoViewModel.getAllIngresos().observe(viewLifecycleOwner){ingresos ->ingresos.let {
+                    Log.d("FragmentIngresos", "ingresos: $it")
+                } }
 
-        val ingresosCasuales = mutableListOf<Ingreso>(
-            IngresoCasual("Venta de garaje", 100),
-            IngresoCasual("Trabajo temporal", 200),
-            IngresoCasual("Ingresos ocasionales", 150)
-        )
 
-        val totalIngresos =
-            ingresosMensuales.sumOf { it.valor } + ingresosCasuales.sumOf { it.valor }
-        val numberFormat = NumberFormat.getInstance()
-        numberFormat.maximumFractionDigits = 2
-        val totalIngresosFormateado = "${numberFormat.format(totalIngresos)}$"
+                ingresoViewModel.getIngMesDeEsteMes(usuarioId).observe(viewLifecycleOwner) { ingMensuales ->
+                    ingMensuales?.let {
+                        ingresosMensuales = it.toMutableList()
+                    }
+                }
+                Log.d("FragmentIngresos", "ingresos mensuales: $ingresosMensuales")
+                ingresoViewModel.getIngcasDeEsteMes(usuarioId).observe(viewLifecycleOwner) { ingCasuales ->
+                    ingCasuales?.let {
+                        ingresosCasuales = it.toMutableList()
+                    }
+                }
+                Log.d("FragmentIngresos", "ingresos casuales: $ingresosCasuales")
+                ingresoViewModel.getIngTotalDeEsteMes(usuarioId).observe(viewLifecycleOwner){ ingTotal -> ingTotal?.let {
+                    totalIngresos = it
+                }}
+                Log.d("FragmentIngresos", "ingresos totales: $totalIngresos")
+                    val numberFormat = NumberFormat.getInstance()
+                numberFormat.maximumFractionDigits = 2
+                val totalIngresosFormateado = "${numberFormat.format(totalIngresos)}$"
+                val txtBlanco = view.findViewById<TextView>(R.id.txtBlanco)
+                txtBlanco.text = totalIngresosFormateado
 
-        val txtBlanco = view.findViewById<TextView>(R.id.txtBlanco)
-        val btnNuevoIngresoMes = view.findViewById<ConstraintLayout>(R.id.btnNuevoIngresoMes)
-        val btnNuevoIngresoCas = view.findViewById<ConstraintLayout>(R.id.btnNuevoIngresoCas)
-        val contenedor_ingresos_cas = view.findViewById<LinearLayout>(R.id.contenedor_ingresos_cas)
-        val contenedor_ingresos_mes = view.findViewById<LinearLayout>(R.id.contenedor_ingresos_mes)
+                val btnNuevoIngresoMes = view.findViewById<ConstraintLayout>(R.id.btnNuevoIngresoMes)
+                val btnNuevoIngresoCas = view.findViewById<ConstraintLayout>(R.id.btnNuevoIngresoCas)
+                val contenedor_ingresos_cas = view.findViewById<LinearLayout>(R.id.contenedor_ingresos_cas)
+                val contenedor_ingresos_mes = view.findViewById<LinearLayout>(R.id.contenedor_ingresos_mes)
 
-        txtBlanco.text = totalIngresosFormateado
+                txtBlanco.text = totalIngresosFormateado
 
-        btnNuevoIngresoCas.setOnClickListener {
-            val dialogView = layoutInflater.inflate(R.layout.dialog_nuevo_ingreso_cas, null)
-            val editTextCantidad = dialogView.findViewById<TextInputEditText>(R.id.editTextCantidad)
-            val editTextFecha = dialogView.findViewById<EditText>(R.id.editTextFecha)
-            val editTextDescripcion = dialogView.findViewById<EditText>(R.id.editTextDescripcion)
+                btnNuevoIngresoCas.setOnClickListener {
+                    val dialogView = layoutInflater.inflate(R.layout.dialog_nuevo_ingreso_cas, null)
+                    val editTextCantidad = dialogView.findViewById<TextInputEditText>(R.id.editTextCantidad)
+                    val editTextFecha = dialogView.findViewById<EditText>(R.id.editTextFecha)
+                    val editTextDescripcion = dialogView.findViewById<EditText>(R.id.editTextDescripcion)
 
-            editTextFecha.setOnClickListener {
-                showDatePickerDialog(editTextFecha)
+                    editTextFecha.setOnClickListener {
+                        showDatePickerDialog(editTextFecha)
+                    }
+
+                    val dialog = AlertDialog.Builder(requireContext())
+                        .setView(dialogView)
+                        .setPositiveButton("Guardar") { dialog, _ ->
+                            val cantidad = editTextCantidad.text.toString().toDouble()
+                            val fechaOriginal = editTextFecha.text.toString()
+                            val descripcion = editTextDescripcion.text.toString()
+
+                            val parts = fechaOriginal.split("/")
+                            val fecha = "${parts[2]}-${parts[1]}-${parts[0]}"
+
+                            // Implementar aquí la lógica para guardar los datos del nuevo ingreso
+                            val nuevoIngreso= Ingreso(
+                                descripcion = descripcion,
+                                valor = cantidad,
+                                fecha = fecha,
+                                idUsuario = usuarioId,
+                                tipo = "casual")
+                            ingresoViewModel.insertIngreso(nuevoIngreso)
+
+                        }
+                        .setNegativeButton("Cancelar") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .create()
+
+                    dialog.show()
+                }
+
+                btnNuevoIngresoMes.setOnClickListener {
+                    val dialogView = layoutInflater.inflate(R.layout.dialog_nuevo_ingreso_mes, null)
+                    val editTextCantidad = dialogView.findViewById<TextInputEditText>(R.id.editTextCantidad)
+                    val editTextFecha = dialogView.findViewById<EditText>(R.id.editTextFecha)
+                    val editTextDescripcion = dialogView.findViewById<EditText>(R.id.editTextDescripcion)
+
+                    editTextFecha.setOnClickListener {
+                        showDatePickerDialog(editTextFecha)
+                    }
+
+                    val dialog = AlertDialog.Builder(requireContext())
+                        .setView(dialogView)
+                        .setPositiveButton("Guardar") { dialog, _ ->
+                            val cantidad = editTextCantidad.text.toString().toDouble()
+                            val fechaOriginal = editTextFecha.text.toString()
+                            val descripcion = editTextDescripcion.text.toString()
+
+                            val parts = fechaOriginal.split("/")
+                            val fecha = "${parts[2]}-${parts[1]}-${parts[0]}"
+
+                            // Implementar aquí la lógica para guardar los datos del nuevo ingreso
+                            val nuevoIngreso= Ingreso(
+                                descripcion = descripcion,
+                                valor = cantidad,
+                                fecha = fecha,
+                                idUsuario = usuarioId,
+                                tipo = "mensual")
+                            ingresoViewModel.insertIngreso(nuevoIngreso)
+                        }
+                        .setNegativeButton("Cancelar") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .create()
+
+                    dialog.show()
+                }
+
+                if (ingresosMensuales != null && ingresosCasuales != null) {
+                    cargarIngresos(ingresosCasuales, contenedor_ingresos_cas)
+                    cargarIngresos(ingresosMensuales, contenedor_ingresos_mes)
+                }
             }
-
-            val dialog = AlertDialog.Builder(requireContext())
-                .setView(dialogView)
-                .setPositiveButton("Guardar") { dialog, _ ->
-                    val cantidad = editTextCantidad.text.toString()
-                    val fecha = editTextFecha.text.toString()
-                    val descripcion = editTextDescripcion.text.toString()
-
-                    // Implementar aquí la lógica para guardar los datos del nuevo ingreso
-                }
-                .setNegativeButton("Cancelar") { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .create()
-
-            dialog.show()
-        }
-
-        btnNuevoIngresoMes.setOnClickListener {
-            val dialogView = layoutInflater.inflate(R.layout.dialog_nuevo_ingreso_mes, null)
-            val editTextCantidad = dialogView.findViewById<TextInputEditText>(R.id.editTextCantidad)
-            val editTextFecha = dialogView.findViewById<EditText>(R.id.editTextFecha)
-            val editTextDescripcion = dialogView.findViewById<EditText>(R.id.editTextDescripcion)
-
-            editTextFecha.setOnClickListener {
-                showDatePickerDialog(editTextFecha)
-            }
-
-            val dialog = AlertDialog.Builder(requireContext())
-                .setView(dialogView)
-                .setPositiveButton("Guardar") { dialog, _ ->
-                    val cantidad = editTextCantidad.text.toString()
-                    val fecha = editTextFecha.text.toString()
-                    val descripcion = editTextDescripcion.text.toString()
-
-                    // Implementar aquí la lógica para guardar los datos del nuevo ingreso
-                }
-                .setNegativeButton("Cancelar") { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .create()
-
-            dialog.show()
-        }
-
-        cargarIngresos(ingresosMensuales, contenedor_ingresos_mes)
-        cargarIngresos(ingresosCasuales, contenedor_ingresos_cas)
+        })
     }
 
 
     private fun cargarIngresos(ingresos: List<Ingreso>, contenedor: ViewGroup) {
+        val numberFormat = NumberFormat.getInstance()
+        numberFormat.maximumFractionDigits = 2
         for (ingreso in ingresos) {
             val descripcionTextView = TextView(requireContext())
             descripcionTextView.layoutParams = ViewGroup.LayoutParams(
@@ -159,7 +194,7 @@ class Ingresos : Fragment() {
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            valorTextView.text = ingreso.valor.toString()
+            valorTextView.text = "${numberFormat.format(ingreso.valor)}$"
 
             val params = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,

@@ -9,26 +9,29 @@
         android:id="@+id/nav_dashboard"
         android:name="com.example.coinbycoin.DashboardFragment"
         android:label="@string/dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard">
+    </fragment>
 
     <fragment
         android:id="@+id/nav_perfil"
         android:name="com.example.coinbycoin.Perfil"
         android:label="@string/perfil"
-        tools:layout="@layout/fragment_perfil" />
+        tools:layout="@layout/fragment_perfil">
+    </fragment>
 
     <fragment
         android:id="@+id/nav_reporte"
         android:name="com.example.coinbycoin.Reporte"
         android:label="@string/reporte"
-        tools:layout="@layout/fragment_reporte" />
+        tools:layout="@layout/fragment_reporte" >
+    </fragment>
 
 
     <fragment
         android:id="@+id/nav_ingresos"
         android:name="com.example.coinbycoin.Ingresos"
         android:label="@string/ingresos"
-        tools:layout="@layout/fragment_ingresos" />
-
+        tools:layout="@layout/fragment_ingresos" >
+    </fragment>
 
 </navigation>

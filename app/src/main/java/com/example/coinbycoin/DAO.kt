@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.lifecycle.LiveData
+import androidx.room.Delete
 
 @Dao
 interface UsuarioDao {
@@ -24,7 +25,13 @@ interface UsuarioDao {
     fun getUltimoUsuarioId(): LiveData<Long>
 
     @Query("UPDATE Usuario SET usuario = :usuario, nombres = :nombres, apellidos = :apellidos, documento = :documento, correo = :email, telefono = :numeroTel WHERE id = :usuarioId")
-    suspend fun actualizarUsuario(usuarioId: Long, usuario: String, nombres: String, apellidos: String, documento: String, email: String, numeroTel: String)
+    fun actualizarUsuario(usuarioId: Long, usuario: String, nombres: String, apellidos: String, documento: String, email: String, numeroTel: String)
+
+    @Query("DELETE FROM Usuario WHERE id = :usuarioId")
+    fun eliminarUsuario(usuarioId: Long)
+
+    @Query("UPDATE Usuario SET contrasena = :contrasena WHERE ID = :usuarioId")
+    fun cambiarContrasena(contrasena: String, usuarioId: Long)
 }
 
 @Dao
@@ -41,6 +48,8 @@ interface IngresoDao {
     @Query("SELECT * FROM Ingreso WHERE tipo = 'casual' AND idUsuario = :usuarioId AND strftime('%Y', fecha, 'unixepoch') = strftime('%Y', 'now') AND strftime('%m', fecha, 'unixepoch') = strftime('%m', 'now')")
     fun getIngCasDeEsteMes(usuarioId: Long): LiveData<List<Ingreso>>
 
+    @Query("SELECT SUM(valor) FROM Ingreso WHERE idUsuario = :usuarioId AND strftime('%Y', fecha, 'unixepoch') = strftime('%Y', 'now') AND strftime('%m', fecha, 'unixepoch') = strftime('%m', 'now')")
+    fun getIngTotalDeEsteMes(usuarioId: Long): LiveData<Double>
 
 }
 
