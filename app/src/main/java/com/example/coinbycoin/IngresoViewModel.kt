@@ -28,4 +28,12 @@ class IngresoViewModel(application: Application) :AndroidViewModel(application){
     fun getIngcasDeEsteMes(usuarioId: Long): LiveData<List<Ingreso>> {
         return repository.getIngCasDeEsteMes(usuarioId)
     }
+
+    fun getIngTotalDeEsteMes(usuarioId: Long): LiveData<Double>{
+        return repository.getIngTotalDeEsteMes(usuarioId)
+    }
+
+    fun getAllIngresos(): LiveData<List<Ingreso>>{
+        return repository.getAllIngresos()
+    }
 }

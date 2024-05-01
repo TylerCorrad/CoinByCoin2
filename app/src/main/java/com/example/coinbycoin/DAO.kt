@@ -48,6 +48,8 @@ interface IngresoDao {
     @Query("SELECT * FROM Ingreso WHERE tipo = 'casual' AND idUsuario = :usuarioId AND strftime('%Y', fecha, 'unixepoch') = strftime('%Y', 'now') AND strftime('%m', fecha, 'unixepoch') = strftime('%m', 'now')")
     fun getIngCasDeEsteMes(usuarioId: Long): LiveData<List<Ingreso>>
 
+    @Query("SELECT SUM(valor) FROM Ingreso WHERE idUsuario = :usuarioId AND strftime('%Y', fecha, 'unixepoch') = strftime('%Y', 'now') AND strftime('%m', fecha, 'unixepoch') = strftime('%m', 'now')")
+    fun getIngTotalDeEsteMes(usuarioId: Long): LiveData<Double>
 
 }
 
