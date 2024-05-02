@@ -18,6 +18,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputEditText
 import java.text.NumberFormat
+import java.time.LocalDate
+import java.time.LocalDate.now
 
 class Ingresos : Fragment(), IngresosListener {
 
@@ -143,6 +145,7 @@ class Ingresos : Fragment(), IngresosListener {
 
         ingresoViewModel.getIngMesDeEsteMes(usuarioId).observe(viewLifecycleOwner) { ingMensuales ->
             ingresosMensuales = (ingMensuales.toMutableList())
+                verificarIngresosMensuales(ingresosMensuales)
             Log.d("FragmentIngresos", "ingresos Mensuales $ingresosMensuales")
             checkDataLoaded()
         }
@@ -242,6 +245,46 @@ class Ingresos : Fragment(), IngresosListener {
 
         datePickerDialog.show()
     }
+
+    @SuppressLint("NewApi")
+    fun verificarIngresosMensuales(ingresosMesActual: List<Ingreso>) {
+        // Obtener la fecha del mes anterior
+        val currentDate = now()
+        val lastMonthDate = currentDate.minusMonths(1)
+
+        val yearString = lastMonthDate.year.toString()
+        val monthString = lastMonthDate.monthValue.toString().padStart(2, '0')
+
+        // Consultar los ingresos mensuales del mes anterior
+        ingresoViewModel.getIngresosMensuales(usuarioId, yearString, monthString).observe(viewLifecycleOwner) { ingresos ->
+            var ingresoExistente = false
+            // Verificar si hay un ingreso mensual con la misma descripción
+            for (ingreso in ingresos) {
+                for(ingActual in ingresosMesActual){
+                    if(ingreso.descripcion == ingActual.descripcion){
+                        ingresoExistente = true
+                    }
+                }
+                if(!ingresoExistente){
+                    val parts = ingreso.fecha.split("-")
+                    val year = parts[0].toInt()
+                    val day = parts[2]
+
+                    val fechaNueva = "$year-${currentDate.monthValue}-$day"
+                    val nuevoIngreso = Ingreso(
+                        descripcion = ingreso.descripcion,
+                        valor = ingreso.valor,
+                        fecha = fechaNueva,
+                        idUsuario = ingreso.idUsuario,
+                        tipo = ingreso.tipo
+                    )
+                    ingresoViewModel.insertIngreso(nuevoIngreso)
+                }
+            }
+
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

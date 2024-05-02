@@ -39,4 +39,8 @@ class IngresoViewModel(application: Application) :AndroidViewModel(application){
     fun verificacion(usuarioId: Long): LiveData<List<Ingreso>>{
         return repository.verificacion(usuarioId)
     }
+
+    fun getIngresosMensuales(usuarioId: Long, anio: String, mes:String): LiveData<List<Ingreso>>{
+        return repository.getIngresosMensuales(usuarioId, anio, mes)
+    }
 }
