@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import java.util.Date
 import androidx.room.TypeConverter
 
+data class FechaYAnio(val mesParte: String, val mes: String, val anioParte: String, val anio: String)
 @Entity
 data class Usuario(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
