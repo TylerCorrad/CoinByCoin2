@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [Usuario::class, Ingreso::class, Gasto::class], version = 2)
+@Database(entities = [Usuario::class, Ingreso::class, Gasto::class], version = 3)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun usuarioDao(): UsuarioDao
     abstract fun ingresoDao(): IngresoDao

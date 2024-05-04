@@ -37,7 +37,7 @@ data class Gasto(
     val descripcion: String,
     val categoria: String,
     val fecha: String,
-    val cantidad: Double,
+    val valor: Double,
     val idUsuario: Long
 )
 

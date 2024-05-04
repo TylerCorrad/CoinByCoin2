@@ -289,7 +289,7 @@ class Ingresos : Fragment(), IngresosListener {
                     val fecha = ingreso.fecha
                     val parts = fecha.split("-")
                     val fechaFormateada = "${parts[2]}/${parts[1]}/${parts[0]}"
-                    editTextCantidad.setText(ingreso.valor.toInt().toString())
+                    editTextCantidad.setText(ingreso.valor.toString())
                     editTextFecha.setText(fechaFormateada)
                     editTextFecha.setOnClickListener {
                         showDatePickerDialog(editTextFecha)
