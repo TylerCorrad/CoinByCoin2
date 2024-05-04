@@ -146,10 +146,10 @@ class DashboardFragment : Fragment() {
         }
         gastosViewModel.getValorGastosMesCategoria(usuarioId, "Gastos Varios").observe(viewLifecycleOwner){cantidad ->
             if (cantidad != null) {
-            val numberFormat = NumberFormat.getInstance()
-            numberFormat.maximumFractionDigits = 2
-            val cantidadCategoria = cantidad
-            val gastosVariosTextView = binding.cantidadGastosVarios
+                val numberFormat = NumberFormat.getInstance()
+                numberFormat.maximumFractionDigits = 2
+                val cantidadCategoria = cantidad
+                val gastosVariosTextView = binding.cantidadGastosVarios
                 gastosVariosTextView.setText("${numberFormat.format(cantidadCategoria)}$")
                 //cargar la barra de gastos varios
             }
