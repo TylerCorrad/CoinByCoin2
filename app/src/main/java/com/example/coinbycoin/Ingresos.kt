@@ -3,20 +3,28 @@ package com.example.coinbycoin
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.icu.util.Calendar
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import com.example.coinbycoin.databinding.FragmentIngresosBinding
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.LocalDate.now
@@ -41,6 +49,7 @@ class Ingresos : Fragment(), IngresosListener {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -55,6 +64,7 @@ class Ingresos : Fragment(), IngresosListener {
         }
         val btnNuevoIngresoMes = binding.btnNuevoIngresoMes
         val btnNuevoIngresoCas = binding.btnNuevoIngresoCas
+
         btnNuevoIngresoCas.setOnClickListener {
             val dialogView = layoutInflater.inflate(R.layout.dialog_nuevo_ingreso_cas, null)
             val editTextCantidad = dialogView.findViewById<TextInputEditText>(R.id.editTextCantidad)
@@ -68,9 +78,14 @@ class Ingresos : Fragment(), IngresosListener {
             val dialog = AlertDialog.Builder(requireContext())
                 .setView(dialogView)
                 .setPositiveButton("Guardar") { dialog, _ ->
-                    val cantidad = editTextCantidad.text.toString().toDouble()
+                    val cantidad = editTextCantidad.text.toString()
                     val fechaOriginal = editTextFecha.text.toString()
                     val descripcion = editTextDescripcion.text.toString()
+
+                    if (cantidad.isBlank() || fechaOriginal.isBlank() || descripcion.isBlank()) {
+                        Toast.makeText(requireContext(), "Por favor, llene todos los campos", Toast.LENGTH_SHORT).show()
+                        return@setPositiveButton
+                    }
 
                     val parts = fechaOriginal.split("/")
                     val dia = parts[0].padStart(2, '0')
@@ -79,14 +94,14 @@ class Ingresos : Fragment(), IngresosListener {
                     val fecha = "${anio}-${mes}-${dia}"
 
                     // Implementar aquí la lógica para guardar los datos del nuevo ingreso
-                    val nuevoIngreso= Ingreso(
+                    val nuevoIngreso = Ingreso(
                         descripcion = descripcion,
-                        valor = cantidad,
+                        valor = cantidad.toDouble(),
                         fecha = fecha,
                         idUsuario = usuarioId,
-                        tipo = "casual")
+                        tipo = "casual"
+                    )
                     ingresoViewModel.insertIngreso(nuevoIngreso)
-
                 }
                 .setNegativeButton("Cancelar") { dialog, _ ->
                     dialog.dismiss()
@@ -95,6 +110,7 @@ class Ingresos : Fragment(), IngresosListener {
 
             dialog.show()
         }
+
 
         btnNuevoIngresoMes.setOnClickListener {
             val dialogView = layoutInflater.inflate(R.layout.dialog_nuevo_ingreso_mes, null)
@@ -109,9 +125,15 @@ class Ingresos : Fragment(), IngresosListener {
             val dialog = AlertDialog.Builder(requireContext())
                 .setView(dialogView)
                 .setPositiveButton("Guardar") { dialog, _ ->
-                    val cantidad = editTextCantidad.text.toString().toDouble()
+                    val cantidad = editTextCantidad.text.toString()
                     val fechaOriginal = editTextFecha.text.toString()
                     val descripcion = editTextDescripcion.text.toString()
+
+
+                    if (cantidad.isBlank() || fechaOriginal.isBlank() || descripcion.isBlank()) {
+                        Toast.makeText(requireContext(), "Por favor, llene todos los campos", Toast.LENGTH_SHORT).show()
+                        return@setPositiveButton
+                    }
 
                     val parts = fechaOriginal.split("/")
                     val dia = parts[0].padStart(2, '0')
@@ -122,7 +144,7 @@ class Ingresos : Fragment(), IngresosListener {
                     // Implementar aquí la lógica para guardar los datos del nuevo ingreso
                     val nuevoIngreso= Ingreso(
                         descripcion = descripcion,
-                        valor = cantidad,
+                        valor = cantidad.toDouble(),
                         fecha = fecha,
                         idUsuario = usuarioId,
                         tipo = "mensual")
@@ -138,6 +160,7 @@ class Ingresos : Fragment(), IngresosListener {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun cargarIngresos() {
         ingresoViewModel.verificacion(usuarioId).observe(viewLifecycleOwner){ver ->
             Log.d("FragmentIngresos", "verificar $ver")
@@ -145,7 +168,7 @@ class Ingresos : Fragment(), IngresosListener {
 
         ingresoViewModel.getIngMesDeEsteMes(usuarioId).observe(viewLifecycleOwner) { ingMensuales ->
             ingresosMensuales = (ingMensuales.toMutableList())
-                verificarIngresosMensuales(ingresosMensuales)
+            verificarIngresosMensuales(ingresosMensuales)
             Log.d("FragmentIngresos", "ingresos Mensuales $ingresosMensuales")
             checkDataLoaded()
         }
@@ -157,7 +180,9 @@ class Ingresos : Fragment(), IngresosListener {
         }
 
         ingresoViewModel.getIngTotalDeEsteMes(usuarioId).observe(viewLifecycleOwner) { ingTotal ->
-            totalIngresos = ingTotal
+            if (ingTotal != null){
+                totalIngresos = ingTotal
+            }
             Log.d("FragmentIngresos", "total ingresos $totalIngresos")
             checkDataLoaded()
         }
@@ -218,10 +243,104 @@ class Ingresos : Fragment(), IngresosListener {
                 valorParams.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
                 valorParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
 
-                contenedor.addView(this)
+                // Agregar OnClickListener para abrir el diálogo de modificación
+                setOnClickListener {
+                    val dialogView = layoutInflater.inflate(R.layout.dialog_modificar_ingreso, null)
+                    val textViewTitulo = dialogView.findViewById<TextView>(R.id.titulo)
+                    val editTextCantidad = dialogView.findViewById<TextInputEditText>(R.id.editTextCantidad)
+                    val editTextFecha = dialogView.findViewById<EditText>(R.id.editTextFecha)
+                    val dialogModificarIngreso = AlertDialog.Builder(requireContext())
+                        .setView(dialogView)
+                        .setPositiveButton("Aceptar") { dialog, _ ->
+                            val cantidad = editTextCantidad.text.toString()
+                            val fecha = editTextFecha.text.toString()
+                            if (cantidad.isBlank() || fecha.isBlank()) {
+                                Toast.makeText(requireContext(), "Por favor, llene todos los campos", Toast.LENGTH_SHORT).show()
+                                return@setPositiveButton
+                            }
+                            val parts = fecha.split("/")
+                            val dia = parts[0].padStart(2, '0')
+                            val mes = parts[1].padStart(2, '0')
+                            val anio = parts[2]
+                            val fechaFormateada = "${anio}-${mes}-${dia}"
+                            lifecycleScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    ingresoViewModel.modificarIngreso(fechaFormateada, cantidad.toDouble(), ingreso.id)
+                                }
+                            }
+
+                                dialog.dismiss()
+                        }
+                        .setNegativeButton("Cancelar") { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                        .setNeutralButton("Eliminar Ingreso") { dialog, _ ->
+                            lifecycleScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    ingresoViewModel.desactivarIngPasado(ingreso.descripcion)
+                                    ingresoViewModel.eliminarIngreso(ingreso.id)
+                                }
+                            }
+                            Toast.makeText(requireContext(), "Se elimino el ingreso ${ingreso.descripcion}", Toast.LENGTH_SHORT).show()
+                            dialog.dismiss()
+                        }
+                        .create()
+                    textViewTitulo.setText("modificar ingreso con descripcion ${ingreso.descripcion}")
+                    val fecha = ingreso.fecha
+                    val parts = fecha.split("-")
+                    val fechaFormateada = "${parts[2]}/${parts[1]}/${parts[0]}"
+                    editTextCantidad.setText(ingreso.valor.toInt().toString())
+                    editTextFecha.setText(fechaFormateada)
+                    editTextFecha.setOnClickListener {
+                        showDatePickerDialog(editTextFecha)
+                    }
+                    dialogModificarIngreso.show()
+                }
+            }
+
+            contenedor.addView(registroLayout)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun verificarIngresosMensuales(ingresosMesActual: List<Ingreso>) {
+        val currentDate = now()
+        val lastMonthDate = currentDate.minusMonths(1)
+
+        val yearString = lastMonthDate.year.toString()
+        val monthString = lastMonthDate.monthValue.toString().padStart(2, '0')
+
+        val descripcionesActuales = ingresosMesActual.map { it.descripcion }.toSet()
+        Log.d("FragmentIngresos", "Descripciones actuales: $descripcionesActuales") // Agregar este registro
+
+        var isObserving = false
+        ingresoViewModel.getIngresosMensuales(usuarioId, yearString, monthString).observe(viewLifecycleOwner) { ingresos ->
+            if (!isObserving) {
+            Log.d("FragmentIngresos", "Flujo de datos activado")
+            for (ingreso in ingresos) {
+                // Verificar si la descripción del ingreso mensual del mes pasado ya está presente en el conjunto de descripciones actuales
+                if (!descripcionesActuales.contains(ingreso.descripcion)) {
+                    Log.d("FragmentIngresos", "creando ingreso mensual ${ingreso.descripcion} mes $monthString/$yearString")
+                    val parts = ingreso.fecha.split("-")
+                    val year = parts[0].toInt()
+                    val day = parts[2]
+                    val month = currentDate.monthValue.toString().padStart(2, '0')
+                    val fechaNueva = "$year-$month-$day"
+                    val nuevoIngreso = Ingreso(
+                        descripcion = ingreso.descripcion,
+                        valor = ingreso.valor,
+                        fecha = fechaNueva,
+                        idUsuario = ingreso.idUsuario,
+                        tipo = ingreso.tipo
+                    )
+                    ingresoViewModel.insertIngreso(nuevoIngreso)
+                }
+            }
+                isObserving = true
             }
         }
     }
+
 
     private fun showDatePickerDialog(editTextFecha: EditText) {
         // Obtener la fecha actual
@@ -234,7 +353,6 @@ class Ingresos : Fragment(), IngresosListener {
         val datePickerDialog = DatePickerDialog(
             requireContext(),
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                // Aquí obtienes la fecha seleccionada y la estableces en el EditText
                 val fechaSeleccionada = "$dayOfMonth/${monthOfYear + 1}/$year"
                 editTextFecha.setText(fechaSeleccionada)
             },
@@ -245,46 +363,6 @@ class Ingresos : Fragment(), IngresosListener {
 
         datePickerDialog.show()
     }
-
-    @SuppressLint("NewApi")
-    fun verificarIngresosMensuales(ingresosMesActual: List<Ingreso>) {
-        // Obtener la fecha del mes anterior
-        val currentDate = now()
-        val lastMonthDate = currentDate.minusMonths(1)
-
-        val yearString = lastMonthDate.year.toString()
-        val monthString = lastMonthDate.monthValue.toString().padStart(2, '0')
-
-        // Consultar los ingresos mensuales del mes anterior
-        ingresoViewModel.getIngresosMensuales(usuarioId, yearString, monthString).observe(viewLifecycleOwner) { ingresos ->
-            var ingresoExistente = false
-            // Verificar si hay un ingreso mensual con la misma descripción
-            for (ingreso in ingresos) {
-                for(ingActual in ingresosMesActual){
-                    if(ingreso.descripcion == ingActual.descripcion){
-                        ingresoExistente = true
-                    }
-                }
-                if(!ingresoExistente){
-                    val parts = ingreso.fecha.split("-")
-                    val year = parts[0].toInt()
-                    val day = parts[2]
-
-                    val fechaNueva = "$year-${currentDate.monthValue}-$day"
-                    val nuevoIngreso = Ingreso(
-                        descripcion = ingreso.descripcion,
-                        valor = ingreso.valor,
-                        fecha = fechaNueva,
-                        idUsuario = ingreso.idUsuario,
-                        tipo = ingreso.tipo
-                    )
-                    ingresoViewModel.insertIngreso(nuevoIngreso)
-                }
-            }
-
-        }
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

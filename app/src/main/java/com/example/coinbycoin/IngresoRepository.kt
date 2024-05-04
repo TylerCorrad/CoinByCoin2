@@ -28,4 +28,20 @@ class IngresoRepository(private val ingresoDao: IngresoDao) {
     fun getIngresosMensuales(usuarioId: Long, anio: String, mes:String): LiveData<List<Ingreso>>{
         return ingresoDao.getIngresosMensuales(usuarioId,anio,mes)
     }
+
+    fun truncarIngresos(){
+        ingresoDao.truncarIngresos()
+    }
+
+    fun modificarIngreso(fecha: String, valor: Double, id: Long){
+        ingresoDao.modificarIngreso(fecha, valor, id)
+    }
+
+    fun eliminarIngreso(id:Long){
+        ingresoDao.eliminarIngreso(id)
+    }
+
+    fun desactivarIngPasado(descripcion: String){
+        ingresoDao.desactivarIngPasado(descripcion)
+    }
 }

@@ -57,6 +57,19 @@ interface IngresoDao {
     @Query("SELECT * FROM Ingreso WHERE idUsuario = :usuarioId AND tipo = 'mensual' AND SUBSTR(fecha, 1, INSTR(fecha, '-') - 1) = :anio AND SUBSTR(fecha, INSTR(fecha, '-') + 1, 2) = :mes")
     fun getIngresosMensuales(usuarioId: Long, anio: String, mes: String): LiveData<List<Ingreso>>
 
+
+    @Query("DELETE FROM Ingreso")
+    fun truncarIngresos()
+
+    @Query("UPDATE Ingreso SET fecha = :fecha, valor = :valor WHERE id = :id ")
+    fun modificarIngreso(fecha:String, valor:Double, id:Long)
+
+    @Query("DELETE FROM Ingreso WHERE id = :id")
+    fun eliminarIngreso(id: Long)
+
+    @Query("UPDATE Ingreso set tipo = 'mensual Inactivo' WHERE descripcion = :descripcion")
+    fun desactivarIngPasado(descripcion: String)
+
 }
 
 @Dao
