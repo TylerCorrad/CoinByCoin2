@@ -39,17 +39,36 @@ interface IngresoDao {
     @Query("SELECT * FROM Ingreso")
     fun getAll(): LiveData<List<Ingreso>>
 
+    @Query("SELECT * FROM Ingreso WHERE idUsuario = :usuarioId AND tipo = 'casual' AND SUBSTR(fecha, 1, INSTR(fecha, '-') - 1) = strftime('%Y', 'now')")
+    fun verificacion(usuarioId: Long): LiveData<List<Ingreso>>
+
+    @Query("SELECT * FROM Ingreso WHERE idUsuario = :usuarioId AND SUBSTR(fecha, 1, INSTR(fecha, '-') - 1) = strftime('%Y', 'now') AND SUBSTR(fecha, INSTR(fecha, '-') + 1, 2) = strftime('%m', 'now') AND tipo = 'mensual'")
+    fun getIngMesDeEsteMes(usuarioId: Long): LiveData<List<Ingreso>>
+
     @Insert
     fun insert(ingreso: Ingreso)
 
-    @Query("SELECT * FROM Ingreso WHERE tipo = 'mensual' AND idUsuario = :usuarioId AND strftime('%Y', fecha, 'unixepoch') = strftime('%Y', 'now')AND strftime('%m', fecha, 'unixepoch') = strftime('%m', 'now')" )
-    fun getIngMesDeEsteMes(usuarioId: Long): LiveData<List<Ingreso>>
-
-    @Query("SELECT * FROM Ingreso WHERE tipo = 'casual' AND idUsuario = :usuarioId AND strftime('%Y', fecha, 'unixepoch') = strftime('%Y', 'now') AND strftime('%m', fecha, 'unixepoch') = strftime('%m', 'now')")
+    @Query("SELECT * FROM Ingreso WHERE idUsuario = :usuarioId AND SUBSTR(fecha, 1, INSTR(fecha, '-') - 1) = strftime('%Y', 'now') AND SUBSTR(fecha, INSTR(fecha, '-') + 1, 2) = strftime('%m', 'now') AND tipo = 'casual'")
     fun getIngCasDeEsteMes(usuarioId: Long): LiveData<List<Ingreso>>
 
-    @Query("SELECT SUM(valor) FROM Ingreso WHERE idUsuario = :usuarioId AND strftime('%Y', fecha, 'unixepoch') = strftime('%Y', 'now') AND strftime('%m', fecha, 'unixepoch') = strftime('%m', 'now')")
+    @Query("SELECT SUM(valor) FROM Ingreso WHERE idUsuario = :usuarioId AND SUBSTR(fecha, 1, INSTR(fecha, '-') - 1) = strftime('%Y', 'now')AND SUBSTR(fecha, INSTR(fecha, '-') + 1, 2) = strftime('%m', 'now')")
     fun getIngTotalDeEsteMes(usuarioId: Long): LiveData<Double>
+
+    @Query("SELECT * FROM Ingreso WHERE idUsuario = :usuarioId AND tipo = 'mensual' AND SUBSTR(fecha, 1, INSTR(fecha, '-') - 1) = :anio AND SUBSTR(fecha, INSTR(fecha, '-') + 1, 2) = :mes")
+    fun getIngresosMensuales(usuarioId: Long, anio: String, mes: String): LiveData<List<Ingreso>>
+
+
+    @Query("DELETE FROM Ingreso")
+    fun truncarIngresos()
+
+    @Query("UPDATE Ingreso SET fecha = :fecha, valor = :valor WHERE id = :id ")
+    fun modificarIngreso(fecha:String, valor:Double, id:Long)
+
+    @Query("DELETE FROM Ingreso WHERE id = :id")
+    fun eliminarIngreso(id: Long)
+
+    @Query("UPDATE Ingreso set tipo = 'mensual Inactivo' WHERE descripcion = :descripcion")
+    fun desactivarIngPasado(descripcion: String)
 
 }
 

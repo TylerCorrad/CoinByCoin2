@@ -79,4 +79,7 @@
     <string name="el_usuario_no_existe">el usuario no existe</string>
     <string name="la_contrase_a_no_es_correcta_o_no_coincide">la contraseña no es correcta o no coincide</string>
     <string name="error_al_obtener_el_id_del_usuario">Error al obtener el ID del usuario</string>
+    <string name="modificar_ingreso">modificar ingreso</string>
+    <string name="eiminar_ingreso">Eiminar ingreso</string>
+    <string name="eliminar_ingreso">eliminar ingreso</string>
 </resources>

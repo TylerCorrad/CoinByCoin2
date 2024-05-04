@@ -25,7 +25,7 @@ class IngresoViewModel(application: Application) :AndroidViewModel(application){
     fun getIngMesDeEsteMes(usuarioId: Long): LiveData<List<Ingreso>> {
         return repository.getIngMesDeEsteMes(usuarioId)
     }
-    fun getIngcasDeEsteMes(usuarioId: Long): LiveData<List<Ingreso>> {
+    fun getIngCasDeEsteMes(usuarioId: Long): LiveData<List<Ingreso>> {
         return repository.getIngCasDeEsteMes(usuarioId)
     }
 
@@ -35,5 +35,28 @@ class IngresoViewModel(application: Application) :AndroidViewModel(application){
 
     fun getAllIngresos(): LiveData<List<Ingreso>>{
         return repository.getAllIngresos()
+    }
+    fun verificacion(usuarioId: Long): LiveData<List<Ingreso>>{
+        return repository.verificacion(usuarioId)
+    }
+
+    fun getIngresosMensuales(usuarioId: Long, anio: String, mes:String): LiveData<List<Ingreso>>{
+        return repository.getIngresosMensuales(usuarioId, anio, mes)
+    }
+
+    fun truncarIngresos(){
+        repository.truncarIngresos()
+    }
+
+    fun modificarIngreso(fecha: String, valor:Double, id: Long){
+        repository.modificarIngreso(fecha, valor, id)
+    }
+
+    fun eliminarIngreso(id: Long){
+        repository.eliminarIngreso(id)
+    }
+
+    fun desactivarIngPasado(descripcion:String){
+        repository.desactivarIngPasado(descripcion)
     }
 }

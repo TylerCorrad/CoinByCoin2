@@ -44,22 +44,16 @@ class Dashboard : AppCompatActivity() {
                 R.id.nav_dashboard, R.id.nav_perfil, R.id.nav_ingresos, R.id.nav_reporte), drawerLayout
         )
         val usuarioId: Long = intent.getLongExtra("usuario_id", -1)
-        /*val bundle = Bundle().apply {
-            putLong("usuario_id", usuarioId)
-        }*/
+
         Log.d("ActivityDashboard","IdUsuario: $usuarioId")
-        //navHostFragment.navController.setGraph(R.navigation.mobile_navigation, bundle)
         val viewModel: SharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         viewModel.setUsuarioId(usuarioId)
-// Configurar la ActionBar para que cambie con el NavController
         setupActionBarWithNavController(navController,appBarConfiguration)
-// Configurar el NavigationView para que navegue con el NavController
-        navView.setupWithNavController(navController)
+      navView.setupWithNavController(navController)
 
         usuarioViewModel = ViewModelProvider(this).get(UsuarioViewModel::class.java)
 
         usuarioViewModel.getUsuarioPorId(usuarioId).observe(this) { usuario ->
-            // Usuario encontrado, actualiza los TextViews en el nav_header_dashboard
 
             val navHeader = findViewById<NavigationView>(R.id.nav_view).getHeaderView(0)
             val nombreUsuarioTextView = navHeader.findViewById<TextView>(R.id.NombreUsuario)
