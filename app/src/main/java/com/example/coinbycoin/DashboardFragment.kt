@@ -8,9 +8,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -22,9 +25,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import lecho.lib.hellocharts.model.*
+import lecho.lib.hellocharts.view.ColumnChartView
 import java.text.NumberFormat
+import android.graphics.Color as Color1
 
-class DashboardFragment : Fragment() {
+class DashboardFragment : Fragment(), OnItemClickListener {
 
     private var usuarioId: Long = -1
     private lateinit var sharedViewModel: SharedViewModel
@@ -68,20 +74,20 @@ class DashboardFragment : Fragment() {
                 val recyclrerViewAlimentos = binding.recyclerViewAlimentos
 
 
-                bloqueTransporte.setOnClickListener{
+                bloqueTransporte.setOnClickListener {
                     var visibilidad = false
                     mostrarListaDeGastos(recyclrerViewTransporte, "Transporte")
                 }
-                bloqueMercado.setOnClickListener{
+                bloqueMercado.setOnClickListener {
                     mostrarListaDeGastos(recyclrerViewMercado, "Mercado")
                 }
-                bloqueServicios.setOnClickListener{
+                bloqueServicios.setOnClickListener {
                     mostrarListaDeGastos(recyclrerViewServicios, "Servicios")
                 }
-                bloqueAlimentos.setOnClickListener{
+                bloqueAlimentos.setOnClickListener {
                     mostrarListaDeGastos(recyclrerViewAlimentos, "Alimentos")
                 }
-                bloqueGastosVarios.setOnClickListener{
+                bloqueGastosVarios.setOnClickListener {
                     mostrarListaDeGastos(recyclrerViewGastosVarios, "Gastos Varios")
                 }
 
@@ -112,25 +118,40 @@ class DashboardFragment : Fragment() {
                     val fechaOriginal = editTextFecha.text.toString()
                     val descripcion = editTextDescripcion.text.toString()
 
-                    val parts = fechaOriginal.split("/")
-                    val dia = parts[0].padStart(2, '0')
-                    val mes = parts[1].padStart(2, '0')
-                    val anio = parts[2]
-                    val fecha = "${anio}-${mes}-${dia}"
+                    // Validar que los campos obligatorios no estén vacíos
+                    if (categoria.isNotBlank() && cantidad.isNotBlank() && fechaOriginal.isNotBlank() && descripcion.isNotBlank()) {
+                        try {
+                            // Validar que la cantidad sea un número válido
+                            val valor = cantidad.toDouble()
 
-                    val nuevoGasto = Gasto(
-                        categoria = categoria,
-                        fecha = fecha,
-                        valor = cantidad.toDouble(),
-                        descripcion = descripcion,
-                        idUsuario = usuarioId
-                    )
-                    lifecycleScope.launch {
-                        withContext(Dispatchers.IO) {
-                            gastosViewModel.insertGasto(nuevoGasto)
+                            // Realizar la conversión de fecha y guardar el nuevo gasto
+                            val parts = fechaOriginal.split("/")
+                            val dia = parts[0].padStart(2, '0')
+                            val mes = parts[1].padStart(2, '0')
+                            val anio = parts[2]
+                            val fecha = "${anio}-${mes}-${dia}"
+                            val nuevoGasto = Gasto(
+                                categoria = categoria,
+                                fecha = fecha,
+                                valor = valor,
+                                descripcion = descripcion,
+                                idUsuario = usuarioId
+                            )
+                            lifecycleScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    gastosViewModel.insertGasto(nuevoGasto)
+                                }
+                            }
+                            dialog.dismiss()
+                        } catch (e: NumberFormatException) {
+                            // Manejar el caso en que la cantidad no sea un número válido
+                            Toast.makeText(requireContext(), "La cantidad ingresada no es válida", Toast.LENGTH_SHORT).show()
                         }
+                    } else {
+                        // Mostrar un mensaje de error si algún campo obligatorio está vacío
+                        Toast.makeText(requireContext(), "Por favor complete todos los campos", Toast.LENGTH_SHORT).show()
                     }
-                        }
+                }
                 .setNegativeButton("Cancelar") { dialog, _ ->
                     dialog.dismiss()
                 }
@@ -165,99 +186,401 @@ class DashboardFragment : Fragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun cargarDatos(){
-        gastosViewModel.getDisponible(usuarioId).observe(viewLifecycleOwner){ disp ->
+    private fun cargarDatos() {
+
+        gastosViewModel.getDisponible(usuarioId).observe(viewLifecycleOwner) { disp ->
             val numberFormat = NumberFormat.getInstance()
             numberFormat.maximumFractionDigits = 2
-            if(disp != null) {
+            if (disp != null) {
                 disponible = disp
                 val disponibleTextView = binding.cantidadDisponible
                 disponibleTextView.setText("${numberFormat.format(disponible)}$")
-                //cargar la barra de disponible
+                val barraDisponible = binding.barraDisponible
+                val colorHex = "#87EE2B"
+                val color = Color1.parseColor(colorHex)
+                cargarBarraDisp(disponible, barraDisponible, color)
+            }else{
+                val barraDisponible = binding.barraDisponible
+                cargarBarraVacia(barraDisponible)
             }
         }
-        gastosViewModel.getValorGastosMesCategoria(usuarioId, "Gastos Varios").observe(viewLifecycleOwner){cantidad ->
-            if (cantidad != null) {
-                val numberFormat = NumberFormat.getInstance()
-                numberFormat.maximumFractionDigits = 2
-                val cantidadCategoria = cantidad
-                val gastosVariosTextView = binding.cantidadGastosVarios
-                gastosVariosTextView.setText("${numberFormat.format(cantidadCategoria)}$")
-                //cargar la barra de gastos varios
+        gastosViewModel.getValorGastosMesCategoria(usuarioId, "Gastos Varios")
+            .observe(viewLifecycleOwner) { cantidad ->
+                if (cantidad != null) {
+                    val numberFormat = NumberFormat.getInstance()
+                    numberFormat.maximumFractionDigits = 2
+                    val cantidadCategoria = cantidad
+                    val gastosVariosTextView = binding.cantidadGastosVarios
+                    gastosVariosTextView.setText("${numberFormat.format(cantidadCategoria)}$")
+                    val barraGastosVarios = binding.barraGastosVarios
+                    val colorHex = "#F66B6B"
+                    val color = Color1.parseColor(colorHex)
+                    cargarBarra(cantidadCategoria, barraGastosVarios, color)
+                }else {
+                    val barraGastosVarios = binding.barraGastosVarios
+                    cargarBarraVacia(barraGastosVarios)
+                }
             }
-        }
 
-        gastosViewModel.getValorGastosMesCategoria(usuarioId, "Alimentos").observe(viewLifecycleOwner){cantidad ->
-            if (cantidad != null) {
-                val numberFormat = NumberFormat.getInstance()
-                numberFormat.maximumFractionDigits = 2
-                val cantidadCategoria = cantidad
-                val AlimentosTextView = binding.cantidadAlimentos
-                AlimentosTextView.setText("${numberFormat.format(cantidadCategoria)}$")
-                //cargar la barra de alimentos
+        gastosViewModel.getValorGastosMesCategoria(usuarioId, "Alimentos")
+            .observe(viewLifecycleOwner) { cantidad ->
+                if (cantidad != null) {
+                    val numberFormat = NumberFormat.getInstance()
+                    numberFormat.maximumFractionDigits = 2
+                    val cantidadCategoria = cantidad
+                    val AlimentosTextView = binding.cantidadAlimentos
+                    AlimentosTextView.setText("${numberFormat.format(cantidadCategoria)}$")
+                    val barraAlimentos = binding.barraAlimentos
+                    val colorHex = "#FF66C1"
+                    val color = Color1.parseColor(colorHex)
+                    cargarBarra(cantidadCategoria, barraAlimentos, color)
+                }else {
+                    val barraAlimentos = binding.barraAlimentos
+                    cargarBarraVacia(barraAlimentos)
+                }
             }
-        }
 
-        gastosViewModel.getValorGastosMesCategoria(usuarioId, "Transporte").observe(viewLifecycleOwner){cantidad ->
-            if (cantidad != null) {
-                val numberFormat = NumberFormat.getInstance()
-                numberFormat.maximumFractionDigits = 2
-                val cantidadCategoria = cantidad
-                val TransporteTextView = binding.cantidadTransporte
-                TransporteTextView.setText("${numberFormat.format(cantidadCategoria)}$")
-                //cargar la barra de Transporte
+        gastosViewModel.getValorGastosMesCategoria(usuarioId, "Transporte")
+            .observe(viewLifecycleOwner) { cantidad ->
+                if (cantidad != null) {
+                    val numberFormat = NumberFormat.getInstance()
+                    numberFormat.maximumFractionDigits = 2
+                    val cantidadCategoria = cantidad
+                    val TransporteTextView = binding.cantidadTransporte
+                    TransporteTextView.setText("${numberFormat.format(cantidadCategoria)}$")
+                    val barraTransporte = binding.barraTransporte
+                    val colorHex = "#339AF0"
+                    val color = Color1.parseColor(colorHex)
+                    cargarBarra(cantidadCategoria, barraTransporte, color)
+                }else {
+                    val barraTransporte = binding.barraTransporte
+                    cargarBarraVacia(barraTransporte)
+                }
             }
-        }
 
-        gastosViewModel.getValorGastosMesCategoria(usuarioId, "Servicios").observe(viewLifecycleOwner){cantidad ->
-            if (cantidad != null) {
-                val numberFormat = NumberFormat.getInstance()
-                numberFormat.maximumFractionDigits = 2
-                val cantidadCategoria = cantidad
-                val ServiciosTextView = binding.cantidadServicios
-                ServiciosTextView.setText("${numberFormat.format(cantidadCategoria)}$")
-                //cargar la barra de Servicios
+        gastosViewModel.getValorGastosMesCategoria(usuarioId, "Servicios")
+            .observe(viewLifecycleOwner) { cantidad ->
+                if (cantidad != null) {
+                    val numberFormat = NumberFormat.getInstance()
+                    numberFormat.maximumFractionDigits = 2
+                    val cantidadCategoria = cantidad
+                    val ServiciosTextView = binding.cantidadServicios
+                    ServiciosTextView.setText("${numberFormat.format(cantidadCategoria)}$")
+                    val barraServicios = binding.barraServicios
+                    val colorHex = "#EEB62B"
+                    val color = Color1.parseColor(colorHex)
+                    cargarBarra(cantidadCategoria, barraServicios, color)
+                }else{
+                    val barraServicios = binding.barraServicios
+                    cargarBarraVacia(barraServicios)
+                }
             }
-        }
 
-        gastosViewModel.getValorGastosMesCategoria(usuarioId, "Mercado").observe(viewLifecycleOwner){cantidad ->
-            if (cantidad != null) {
-                val numberFormat = NumberFormat.getInstance()
-                numberFormat.maximumFractionDigits = 2
-                val cantidadCategoria = cantidad
-                val MercadoTextView = binding.cantidadMercado
-                MercadoTextView.setText("${numberFormat.format(cantidadCategoria)}$")
-                //cargar la barra de Mercado
+        gastosViewModel.getValorGastosMesCategoria(usuarioId, "Mercado")
+            .observe(viewLifecycleOwner) { cantidad ->
+                if (cantidad != null) {
+                    val numberFormat = NumberFormat.getInstance()
+                    numberFormat.maximumFractionDigits = 2
+                    val cantidadCategoria = cantidad
+                    val MercadoTextView = binding.cantidadMercado
+                    MercadoTextView.setText("${numberFormat.format(cantidadCategoria)}$")
+                    val barraMercado = binding.barraMercado
+                    val colorHex = "#FD8435"
+                    val color = Color1.parseColor(colorHex)
+                    cargarBarra(cantidadCategoria, barraMercado, color)
+                }else{
+                    val barraMercado = binding.barraMercado
+                    cargarBarraVacia(barraMercado)
+                }
             }
-        }
 
-        gastosViewModel.getValorGastosMes(usuarioId).observe(viewLifecycleOwner){gastosMes ->
+        gastosViewModel.getValorGastosMes(usuarioId).observe(viewLifecycleOwner) { gastosMes ->
             if (gastosMes != null) {
                 val numberFormat = NumberFormat.getInstance()
                 numberFormat.maximumFractionDigits = 2
                 val cantidadGastos = gastosMes
                 val gastadosTextView = binding.TxtGastoTotal
                 gastadosTextView.setText("${numberFormat.format(cantidadGastos)}$")
-                //cargar circulo general
+                cargarDona(cantidadGastos)
             }
         }
     }
 
-    private fun mostrarListaDeGastos(recyclerView: RecyclerView, categoria: String){
-        gastosViewModel.getGastosMesCategoria(usuarioId, categoria).observe(viewLifecycleOwner){gastosCat ->
-            // Crear un adaptador para el RecyclerView
-            val adapter = GastoAdapter(gastosCat)
+    private fun mostrarListaDeGastos(recyclerView: RecyclerView, categoria: String) {
+        gastosViewModel.getGastosMesCategoria(usuarioId, categoria)
+            .observe(viewLifecycleOwner) { gastosCat ->
+                // Crear un adaptador para el RecyclerView
+                val adapter = GastoAdapter(gastosCat)
+                adapter.setOnItemClickListener(this)
+                recyclerView.adapter = adapter
+                recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-            recyclerView.apply {
-                layoutManager = LinearLayoutManager(requireContext())
-                setAdapter(adapter)
-            }
-            if(recyclerView.visibility == View.GONE){
-                recyclerView.visibility = View.VISIBLE
-            }else{
-                recyclerView.visibility = View.GONE
-            }
+                recyclerView.apply {
+                    layoutManager = LinearLayoutManager(requireContext())
+                    setAdapter(adapter)
+                }
+                if (recyclerView.visibility == View.GONE) {
+                    recyclerView.visibility = View.VISIBLE
+                } else {
+                    recyclerView.visibility = View.GONE
+                }
 
+            }
+    }
+
+    override fun onItemClick(gasto: Gasto) {
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_modificar_gasto, null)
+        val spinnerCategoria = dialogView.findViewById<Spinner>(R.id.spinnerCategoria)
+        val items = resources.getStringArray(R.array.categorias).toList()
+        val adapter = CustomSpinnerAdapter(requireContext(), items)
+        spinnerCategoria.adapter = adapter
+        val editTextCantidad = dialogView.findViewById<EditText>(R.id.editTextCantidad)
+        val editTextFecha = dialogView.findViewById<EditText>(R.id.editTextFecha)
+        val editTextDescripcion = dialogView.findViewById<EditText>(R.id.editTextDescripcion)
+        val btnEliminar = dialogView.findViewById<Button>(R.id.btnEliminarGasto)
+        editTextCantidad.setText(gasto.valor.toString())
+        val parts = gasto.fecha.split("-")
+        val fechaFormateada = "${parts[2]}/${parts[1]}/${parts[0]}"
+        editTextFecha.setText(fechaFormateada)
+        editTextDescripcion.setText(gasto.descripcion)
+        val posicionCategoria = items.indexOf(gasto.categoria)
+        if (posicionCategoria != -1) {
+            spinnerCategoria.setSelection(posicionCategoria)
         }
+
+        editTextFecha.setOnClickListener {
+            showDatePickerDialog(editTextFecha)
+        }
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .setPositiveButton("Guardar") { dialog, _ ->
+                val categoria = spinnerCategoria.selectedItem.toString()
+                val cantidad = editTextCantidad.text.toString()
+                val fechaOriginal = editTextFecha.text.toString()
+                val descripcion = editTextDescripcion.text.toString()
+
+                // Validar que los campos obligatorios no estén vacíos
+                if (categoria.isNotBlank() && cantidad.isNotBlank() && fechaOriginal.isNotBlank() && descripcion.isNotBlank()) {
+                    try {
+                        // Validar que la cantidad sea un número válido
+                        val valor = cantidad.toDouble()
+
+                        // Realizar la conversión de fecha y guardar los cambios
+                        val parts = fechaOriginal.split("/")
+                        val dia = parts[0].padStart(2, '0')
+                        val mes = parts[1].padStart(2, '0')
+                        val anio = parts[2]
+                        val fecha = "${anio}-${mes}-${dia}"
+                        lifecycleScope.launch {
+                            withContext(Dispatchers.IO) {
+                                gastosViewModel.modificarGasto(
+                                    id = gasto.id,
+                                    categoria = categoria,
+                                    valor = valor,
+                                    descripcion = descripcion,
+                                    fecha = fecha
+                                )
+                            }
+                        }
+                        dialog.dismiss()
+                    } catch (e: NumberFormatException) {
+                        // Manejar el caso en que la cantidad no sea un número válido
+                        Toast.makeText(requireContext(), "La cantidad ingresada no es válida", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    // Mostrar un mensaje de error si algún campo obligatorio está vacío
+                    Toast.makeText(requireContext(), "Por favor complete todos los campos", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            .setNegativeButton("Cancelar") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+
+        btnEliminar.setOnClickListener {
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    gastosViewModel.deleteGasto(gasto.id)
+                }
+            }
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+
+    fun cargarBarra(cantidad: Double, barra: ColumnChartView, color: Int) {
+        gastosViewModel.getValorGastosMes(usuarioId).observe(viewLifecycleOwner) { gastosMes ->
+            if (gastosMes != null) {
+                gastosViewModel.getDisponible(usuarioId).observe(viewLifecycleOwner) { disponible ->
+                    if (disponible != null) {
+
+                        val gris = ContextCompat.getColor(requireContext(), R.color.gris)
+                        val restante = disponible + gastosMes - cantidad
+                        val barValues = mutableListOf<SubcolumnValue>()
+                        barValues.add(
+                            SubcolumnValue(
+                                cantidad.toFloat(),
+                                color
+                            )
+                        ) // Valor de cantidad
+                        barValues.add(SubcolumnValue(restante.toFloat(), gris)) // Valor de residuo
+
+                        val column = Column(barValues)
+                        val columns = mutableListOf(column)
+
+                        val data = ColumnChartData(columns)
+
+                        // Configurar la apariencia del gráfico de barras
+                        data.isStacked = true // Apilar valores
+                        val axisValues = mutableListOf<AxisValue>()
+                        data.axisXBottom = Axis(axisValues)
+                        data.axisYLeft = Axis()
+
+                        barra.columnChartData = data
+                    }
+                }
+            }
+        }
+    }
+
+    fun cargarBarraDisp(cantidad: Double, barra: ColumnChartView, color: Int) {
+        gastosViewModel.getValorGastosMes(usuarioId).observe(viewLifecycleOwner) { gastosMes ->
+            if (gastosMes != null) {
+                val gris = ContextCompat.getColor(requireContext(), R.color.gris)
+                val barValues = mutableListOf<SubcolumnValue>()
+                if( cantidad >= 0) {
+                    barValues.add(SubcolumnValue(cantidad.toFloat(), color)) // Valor de cantidad
+                }
+                barValues.add(SubcolumnValue(gastosMes.toFloat(), gris)) // Valor de residuo
+
+                val column = Column(barValues)
+                val columns = mutableListOf(column)
+
+                val data = ColumnChartData(columns)
+                data.isStacked = true // Apilar valores
+                val axisValues = mutableListOf<AxisValue>()
+                data.axisXBottom = Axis(axisValues)
+                data.axisYLeft = Axis()
+
+                barra.columnChartData = data
+            }
+        }
+    }
+
+    fun cargarDona(cantidadGastado: Double) {
+        gastosViewModel.getDisponible(usuarioId).observe(viewLifecycleOwner) { disponible ->
+            gastosViewModel.getValorGastosMesCategoria(usuarioId, "Gastos Varios")
+                .observe(viewLifecycleOwner) { cantGastosVarios ->
+                    gastosViewModel.getValorGastosMesCategoria(usuarioId, "Alimentos")
+                        .observe(viewLifecycleOwner) { cantAlimentos ->
+                            gastosViewModel.getValorGastosMesCategoria(usuarioId, "Transporte")
+                                .observe(viewLifecycleOwner) { cantTransporte ->
+                                    gastosViewModel.getValorGastosMesCategoria(
+                                        usuarioId,
+                                        "Servicios"
+                                    ).observe(viewLifecycleOwner) { cantServicios ->
+                                        gastosViewModel.getValorGastosMesCategoria(
+                                            usuarioId,
+                                            "Mercado"
+                                        ).observe(viewLifecycleOwner) { cantMercado ->
+                                            val pieChart = binding.dona1
+                                            val pieData = mutableListOf<SliceValue>()
+                                            if (cantAlimentos != null) {
+                                                pieData.add(
+                                                    SliceValue(
+                                                        cantAlimentos.toFloat(),
+                                                        obtenerColorCategoria("Alimentos")
+                                                    )
+                                                )
+                                            }
+                                            if (cantGastosVarios != null) {
+                                                pieData.add(
+                                                    SliceValue(
+                                                        cantGastosVarios.toFloat(),
+                                                        obtenerColorCategoria("Gastos Varios")
+                                                    )
+                                                )
+                                            }
+                                            if (cantTransporte != null) {
+                                                pieData.add(
+                                                    SliceValue(
+                                                        cantTransporte.toFloat(),
+                                                        obtenerColorCategoria("Transporte")
+                                                    )
+                                                )
+                                            }
+                                            if (cantServicios != null) {
+                                                pieData.add(
+                                                    SliceValue(
+                                                        cantServicios.toFloat(),
+                                                        obtenerColorCategoria("Servicios")
+                                                    )
+                                                )
+                                            }
+                                            if (cantMercado != null) {
+                                                pieData.add(
+                                                    SliceValue(
+                                                        cantMercado.toFloat(),
+                                                        obtenerColorCategoria("Mercado")
+                                                    )
+                                                )
+                                            }
+                                            if (disponible != null && disponible >= 0) {
+                                                pieData.add(
+                                                    SliceValue(
+                                                        disponible.toFloat(),
+                                                        obtenerColorCategoria("disponible")
+                                                    )
+                                                )
+                                            }
+                                            val pieChartData = PieChartData(pieData)
+                                            pieChartData.setHasCenterCircle(true)
+                                            pieChartData.setCenterCircleScale(0.8f) // Tamaño del círculo central (valor entre 0 y 1)
+                                            pieChartData.setCenterCircleColor(Color1.WHITE)
+                                            pieChart.pieChartData = pieChartData
+                                        }
+                                    }
+                                }
+                        }
+                }
+        }
+    }
+
+    // Función para obtener el color correspondiente a cada categoría
+    fun obtenerColorCategoria(categoria: String): Int {
+        val categoriasColores = mapOf(
+            "disponible" to "#87EE2B",
+            "Gastos Varios" to "#F66B6B",
+            "Alimentos" to "#FF66C1",
+            "Transporte" to "#339AF0",
+            "Servicios" to "#EEB62B",
+            "Mercado" to "#FD8435"
+        )
+        val color = Color1.parseColor(categoriasColores[categoria])
+        return color
+    }
+
+    fun cargarBarraVacia(barra: ColumnChartView){
+        val gris = ContextCompat.getColor(requireContext(), R.color.gris)
+        val barValues = mutableListOf<SubcolumnValue>()
+        barValues.add(
+            SubcolumnValue(
+                1.toFloat(),
+                gris
+            )
+        )
+        val column = Column(barValues)
+        val columns = mutableListOf(column)
+        val data = ColumnChartData(columns)
+        data.isStacked = true
+        val axisValues = mutableListOf<AxisValue>()
+        data.axisXBottom = Axis(axisValues)
+        data.axisYLeft = Axis()
+
+        barra.columnChartData = data
+
     }
 }
