@@ -18,13 +18,12 @@
 
             <lecho.lib.hellocharts.view.PieChartView
                 android:id="@+id/dona1"
-                android:layout_width="250dp"
-                android:layout_height="250dp"
+                android:layout_width="260dp"
+                android:layout_height="260dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"/>
 
@@ -34,7 +33,7 @@
             android:layout_height="wrap_content"
             app:autoSizeTextType="uniform"
             app:autoSizeMinTextSize="8sp"
-            app:autoSizeMaxTextSize="72sp"
+            app:autoSizeMaxTextSize="70sp"
             app:autoSizeStepGranularity="2sp"
             app:layout_constraintStart_toStartOf="@id/dona1"
             app:layout_constraintEnd_toEndOf="@id/dona1"
@@ -43,7 +42,7 @@
             android:layout_marginTop="78dp"
             style="@style/TxtGrisGrande"
             android:text="@string/ceros"
-            android:maxWidth="200dp"
+            android:maxWidth="180dp"
             android:maxHeight="100dp"
         />
 

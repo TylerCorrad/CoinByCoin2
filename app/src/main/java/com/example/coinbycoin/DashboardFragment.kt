@@ -118,23 +118,38 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val fechaOriginal = editTextFecha.text.toString()
                     val descripcion = editTextDescripcion.text.toString()
 
-                    val parts = fechaOriginal.split("/")
-                    val dia = parts[0].padStart(2, '0')
-                    val mes = parts[1].padStart(2, '0')
-                    val anio = parts[2]
-                    val fecha = "${anio}-${mes}-${dia}"
+                    // Validar que los campos obligatorios no estén vacíos
+                    if (categoria.isNotBlank() && cantidad.isNotBlank() && fechaOriginal.isNotBlank() && descripcion.isNotBlank()) {
+                        try {
+                            // Validar que la cantidad sea un número válido
+                            val valor = cantidad.toDouble()
 
-                    val nuevoGasto = Gasto(
-                        categoria = categoria,
-                        fecha = fecha,
-                        valor = cantidad.toDouble(),
-                        descripcion = descripcion,
-                        idUsuario = usuarioId
-                    )
-                    lifecycleScope.launch {
-                        withContext(Dispatchers.IO) {
-                            gastosViewModel.insertGasto(nuevoGasto)
+                            // Realizar la conversión de fecha y guardar el nuevo gasto
+                            val parts = fechaOriginal.split("/")
+                            val dia = parts[0].padStart(2, '0')
+                            val mes = parts[1].padStart(2, '0')
+                            val anio = parts[2]
+                            val fecha = "${anio}-${mes}-${dia}"
+                            val nuevoGasto = Gasto(
+                                categoria = categoria,
+                                fecha = fecha,
+                                valor = valor,
+                                descripcion = descripcion,
+                                idUsuario = usuarioId
+                            )
+                            lifecycleScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    gastosViewModel.insertGasto(nuevoGasto)
+                                }
+                            }
+                            dialog.dismiss()
+                        } catch (e: NumberFormatException) {
+                            // Manejar el caso en que la cantidad no sea un número válido
+                            Toast.makeText(requireContext(), "La cantidad ingresada no es válida", Toast.LENGTH_SHORT).show()
                         }
+                    } else {
+                        // Mostrar un mensaje de error si algún campo obligatorio está vacío
+                        Toast.makeText(requireContext(), "Por favor complete todos los campos", Toast.LENGTH_SHORT).show()
                     }
                 }
                 .setNegativeButton("Cancelar") { dialog, _ ->
@@ -184,6 +199,9 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                 val colorHex = "#87EE2B"
                 val color = Color1.parseColor(colorHex)
                 cargarBarraDisp(disponible, barraDisponible, color)
+            }else{
+                val barraDisponible = binding.barraDisponible
+                cargarBarraVacia(barraDisponible)
             }
         }
         gastosViewModel.getValorGastosMesCategoria(usuarioId, "Gastos Varios")
@@ -198,6 +216,9 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val colorHex = "#F66B6B"
                     val color = Color1.parseColor(colorHex)
                     cargarBarra(cantidadCategoria, barraGastosVarios, color)
+                }else {
+                    val barraGastosVarios = binding.barraGastosVarios
+                    cargarBarraVacia(barraGastosVarios)
                 }
             }
 
@@ -213,6 +234,9 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val colorHex = "#FF66C1"
                     val color = Color1.parseColor(colorHex)
                     cargarBarra(cantidadCategoria, barraAlimentos, color)
+                }else {
+                    val barraAlimentos = binding.barraAlimentos
+                    cargarBarraVacia(barraAlimentos)
                 }
             }
 
@@ -228,6 +252,9 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val colorHex = "#339AF0"
                     val color = Color1.parseColor(colorHex)
                     cargarBarra(cantidadCategoria, barraTransporte, color)
+                }else {
+                    val barraTransporte = binding.barraTransporte
+                    cargarBarraVacia(barraTransporte)
                 }
             }
 
@@ -243,6 +270,9 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val colorHex = "#EEB62B"
                     val color = Color1.parseColor(colorHex)
                     cargarBarra(cantidadCategoria, barraServicios, color)
+                }else{
+                    val barraServicios = binding.barraServicios
+                    cargarBarraVacia(barraServicios)
                 }
             }
 
@@ -258,6 +288,9 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val colorHex = "#FD8435"
                     val color = Color1.parseColor(colorHex)
                     cargarBarra(cantidadCategoria, barraMercado, color)
+                }else{
+                    val barraMercado = binding.barraMercado
+                    cargarBarraVacia(barraMercado)
                 }
             }
 
@@ -328,32 +361,40 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                 val fechaOriginal = editTextFecha.text.toString()
                 val descripcion = editTextDescripcion.text.toString()
 
-                val parts = fechaOriginal.split("/")
-                val dia = parts[0].padStart(2, '0')
-                val mes = parts[1].padStart(2, '0')
-                val anio = parts[2]
-                val fecha = "${anio}-${mes}-${dia}"
+                // Validar que los campos obligatorios no estén vacíos
+                if (categoria.isNotBlank() && cantidad.isNotBlank() && fechaOriginal.isNotBlank() && descripcion.isNotBlank()) {
+                    try {
+                        // Validar que la cantidad sea un número válido
+                        val valor = cantidad.toDouble()
 
-                if (categoria == null || cantidad == null || fecha == null || descripcion == null) {
-                    Toast.makeText(
-                        requireContext(),
-                        "Por favor, llene todos los campos",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@setPositiveButton
-                }
-                lifecycleScope.launch {
-                    withContext(Dispatchers.IO) {
-                        gastosViewModel.modificarGasto(
-                            id = gasto.id,
-                            categoria = categoria,
-                            valor = cantidad.toDouble(),
-                            descripcion = descripcion,
-                            fecha = fecha
-                        )
+                        // Realizar la conversión de fecha y guardar los cambios
+                        val parts = fechaOriginal.split("/")
+                        val dia = parts[0].padStart(2, '0')
+                        val mes = parts[1].padStart(2, '0')
+                        val anio = parts[2]
+                        val fecha = "${anio}-${mes}-${dia}"
+                        lifecycleScope.launch {
+                            withContext(Dispatchers.IO) {
+                                gastosViewModel.modificarGasto(
+                                    id = gasto.id,
+                                    categoria = categoria,
+                                    valor = valor,
+                                    descripcion = descripcion,
+                                    fecha = fecha
+                                )
+                            }
+                        }
+                        dialog.dismiss()
+                    } catch (e: NumberFormatException) {
+                        // Manejar el caso en que la cantidad no sea un número válido
+                        Toast.makeText(requireContext(), "La cantidad ingresada no es válida", Toast.LENGTH_SHORT).show()
                     }
+                } else {
+                    // Mostrar un mensaje de error si algún campo obligatorio está vacío
+                    Toast.makeText(requireContext(), "Por favor complete todos los campos", Toast.LENGTH_SHORT).show()
                 }
             }
+
             .setNegativeButton("Cancelar") { dialog, _ ->
                 dialog.dismiss()
             }
@@ -410,7 +451,9 @@ class DashboardFragment : Fragment(), OnItemClickListener {
             if (gastosMes != null) {
                 val gris = ContextCompat.getColor(requireContext(), R.color.gris)
                 val barValues = mutableListOf<SubcolumnValue>()
-                barValues.add(SubcolumnValue(cantidad.toFloat(), color)) // Valor de cantidad
+                if( cantidad >= 0) {
+                    barValues.add(SubcolumnValue(cantidad.toFloat(), color)) // Valor de cantidad
+                }
                 barValues.add(SubcolumnValue(gastosMes.toFloat(), gris)) // Valor de residuo
 
                 val column = Column(barValues)
@@ -485,7 +528,7 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                                                     )
                                                 )
                                             }
-                                            if (disponible != null) {
+                                            if (disponible != null && disponible >= 0) {
                                                 pieData.add(
                                                     SliceValue(
                                                         disponible.toFloat(),
@@ -518,5 +561,26 @@ class DashboardFragment : Fragment(), OnItemClickListener {
         )
         val color = Color1.parseColor(categoriasColores[categoria])
         return color
+    }
+
+    fun cargarBarraVacia(barra: ColumnChartView){
+        val gris = ContextCompat.getColor(requireContext(), R.color.gris)
+        val barValues = mutableListOf<SubcolumnValue>()
+        barValues.add(
+            SubcolumnValue(
+                1.toFloat(),
+                gris
+            )
+        )
+        val column = Column(barValues)
+        val columns = mutableListOf(column)
+        val data = ColumnChartData(columns)
+        data.isStacked = true
+        val axisValues = mutableListOf<AxisValue>()
+        data.axisXBottom = Axis(axisValues)
+        data.axisYLeft = Axis()
+
+        barra.columnChartData = data
+
     }
 }
