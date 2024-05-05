@@ -1,0 +1,43 @@
+package com.example.coinbycoin
+
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+class GastosViewModel(application: Application) :AndroidViewModel(application) {
+
+    private val allGastos: LiveData<List<Gasto>>
+    private val repository: GastoRepository
+
+    init {
+        val gastoDao = AppDatabase.getDatabase(application).gastoDao()
+        repository = GastoRepository(gastoDao)
+        allGastos = repository.getAllGastos()
+    }
+
+
+    fun insertGasto(gasto: Gasto) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.insertGasto(gasto)
+        }
+    }
+
+    fun getDisponible(usuarioId: Long): LiveData<Double>{
+        return repository.getDisponible(usuarioId)
+    }
+
+    fun getValorGastosMes(usuarioId: Long): LiveData<Double>{
+        return repository.getValorGastosMes(usuarioId)
+    }
+
+    fun getValorGastosMesCategoria(usuarioId: Long, categoria:String): LiveData<Double>{
+        return repository.getValorGastosMesCategoria(usuarioId, categoria)
+    }
+
+    fun getGastosMesCategoria(usuarioId: Long, categoria: String):LiveData<List<Gasto>>{
+        return  repository.getGastosMesCategoria(usuarioId, categoria)
+    }
+}
