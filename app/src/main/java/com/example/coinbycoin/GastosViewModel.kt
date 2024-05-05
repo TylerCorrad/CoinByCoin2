@@ -40,4 +40,13 @@ class GastosViewModel(application: Application) :AndroidViewModel(application) {
     fun getGastosMesCategoria(usuarioId: Long, categoria: String):LiveData<List<Gasto>>{
         return  repository.getGastosMesCategoria(usuarioId, categoria)
     }
-}
+
+    fun deleteGasto(id: Long){
+        repository.deleteGasto(id)
+    }
+
+    fun modificarGasto(id: Long, categoria: String, valor: Double, descripcion: String, fecha: String){
+        repository.modificarGasto(id, categoria, valor, descripcion, fecha)
+    }
+
+    }

@@ -16,20 +16,19 @@
             android:layout_height="wrap_content"
             android:paddingBottom="64dp">
 
-        <View
-            android:id="@+id/dona1"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:background="@drawable/dona_gris"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"/>
+            <lecho.lib.hellocharts.view.PieChartView
+                android:id="@+id/dona1"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"/>
 
-        <androidx.appcompat.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/TxtGastoTotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,8 +73,7 @@
                 android:layout_height="40dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:background="@drawable/miscelaneo"
-                />
+                android:background="@drawable/miscelaneo" />
 
             <TextView
                 android:id="@+id/txtGastosVarios"
@@ -88,14 +86,13 @@
                 android:text="@string/gastos_varios"/>
 
 
-            <View
+            <lecho.lib.hellocharts.view.ColumnChartView
                 android:id="@+id/barraGastosVarios"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/imgGastosVarios"
-                android:layout_marginTop="8dp"
-                android:background="@color/gris"/>
+                android:layout_marginTop="8dp"/>
 
 
             <TextView
@@ -134,7 +131,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:background="@drawable/alimentos"
-                />
+                android:contentDescription="@string/alimentos" />
 
             <TextView
                 android:id="@+id/txtAlimentos"
@@ -147,14 +144,14 @@
                 android:text="@string/alimentos"/>
 
 
-            <View
+
+            <lecho.lib.hellocharts.view.ColumnChartView
                 android:id="@+id/barraAlimentos"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/imgAlimentos"
-                android:layout_marginTop="8dp"
-                android:background="@color/gris"/>
+                android:layout_marginTop="8dp"/>
 
 
             <TextView
@@ -196,7 +193,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:background="@drawable/transporte"
-                />
+                android:contentDescription="@string/transporte" />
 
             <TextView
                 android:id="@+id/txtTransporte"
@@ -209,14 +206,13 @@
                 android:text="@string/transporte"/>
 
 
-            <View
+            <lecho.lib.hellocharts.view.ColumnChartView
                 android:id="@+id/barraTransporte"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/imgTransporte"
-                android:layout_marginTop="8dp"
-                android:background="@color/gris"/>
+                android:layout_marginTop="8dp"/>
 
 
             <TextView
@@ -268,14 +264,14 @@
                 style="@style/TxtNegroMedianoItalic"
                 android:text="@string/servicios"/>
 
-            <View
+
+            <lecho.lib.hellocharts.view.ColumnChartView
                 android:id="@+id/barraServicios"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/imgServicios"
-                android:layout_marginTop="8dp"
-                android:background="@color/gris"/>
+                android:layout_marginTop="8dp"/>
 
 
             <TextView
@@ -330,14 +326,14 @@
                 android:text="@string/mercado"/>
 
 
-            <View
+
+            <lecho.lib.hellocharts.view.ColumnChartView
                 android:id="@+id/barraMercado"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/imgMercado"
-                android:layout_marginTop="8dp"
-                android:background="@color/gris"/>
+                android:layout_marginTop="8dp"/>
 
 
             <TextView
@@ -390,14 +386,14 @@
                 style="@style/TxtNegroMedianoItalic"
                 android:text="@string/disponible"/>
 
-            <View
+            <lecho.lib.hellocharts.view.ColumnChartView
                 android:id="@+id/barraDisponible"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/imgDisponible"
                 android:layout_marginTop="8dp"
-                android:background="@color/gris"/>
+                />
 
 
             <TextView

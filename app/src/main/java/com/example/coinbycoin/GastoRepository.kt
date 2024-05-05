@@ -17,4 +17,11 @@ class GastoRepository(private val gastoDao: GastoDao) {
     fun getValorGastosMesCategoria(usuarioId: Long, categoria:String): LiveData<Double> = gastoDao.getValorGastosMesCategoria(usuarioId, categoria)
 
     fun getGastosMesCategoria(usuarioId: Long, categoria: String):LiveData<List<Gasto>> = gastoDao.getGastosMesCategoria(usuarioId, categoria)
+
+    fun deleteGasto(id: Long){
+        gastoDao.deleteGasto(id)
+    }
+    fun modificarGasto(id: Long, categoria: String, valor: Double, descripcion: String, fecha: String){
+        gastoDao.modificarGasto(id, categoria, valor, descripcion, fecha)
+    }
 }

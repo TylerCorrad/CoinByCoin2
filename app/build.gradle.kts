@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    //id("com.google.devtools.ksp")
     id("androidx.room")
     kotlin("kapt")
 }
@@ -56,7 +55,10 @@ android {
     }
 }
 
+
 dependencies {
+    implementation("com.android.support:support-v4:34.0.0")
+    implementation("com.github.lecho:hellocharts-library:1.5.8@aar")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     val lifecycleVersion = "2.2.0"
@@ -90,7 +92,6 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2023.08.00"))
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
-    //implementation("com.github.PhilJay:MPAndroidChart:v3.1.0-alpha")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

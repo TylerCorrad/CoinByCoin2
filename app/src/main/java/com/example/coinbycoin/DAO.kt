@@ -1,11 +1,10 @@
 package com.example.coinbycoin
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.lifecycle.LiveData
-import androidx.room.Delete
 
 @Dao
 interface UsuarioDao {
@@ -91,4 +90,10 @@ interface GastoDao {
 
     @Query("SELECT SUM(valor) FROM Gasto WHERE idUsuario = :usuarioId AND SUBSTR(fecha, 1, INSTR(fecha, '-') - 1) = strftime('%Y', 'now')AND SUBSTR(fecha, INSTR(fecha, '-') + 1, 2) = strftime('%m', 'now')")
     fun getValorGastosMes(usuarioId: Long): LiveData<Double>
+
+    @Query("DELETE FROM Gasto WHERE id = :id")
+    fun deleteGasto(id: Long)
+
+    @Query("UPDATE gasto SET categoria = :categoria, valor = :valor, descripcion = :descripcion, fecha = :fecha WHERE id == :id")
+    fun modificarGasto(id: Long, categoria: String, valor: Double, descripcion: String, fecha: String)
 }
