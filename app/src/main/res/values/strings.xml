@@ -85,4 +85,6 @@
     <string name="modificar_gasto">modificar gasto</string>
     <string name="eliminar_gasto">eliminar_gasto</string>
     <string name="eliminar_gasto1">eliminar gasto</string>
+    <string name="en_construcci_n">En construcción</string>
+    <string name="sorry">Lo sentimos, actualmente esta sección se encuentra en estado de desarrollo</string>
 </resources>
