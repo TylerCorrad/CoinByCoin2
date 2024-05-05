@@ -83,9 +83,12 @@ interface GastoDao {
     @Query("SELECT (SELECT SUM(valor) FROM Ingreso WHERE idUsuario = :usuarioId)-(SELECT SUM(valor) FROM Gasto  WHERE idUsuario = :usuarioId)")
     fun getDisponible(usuarioId: Long): LiveData<Double>
 
-    @Query("SELECT SUM(valor) FROM Gasto WHERE idUsuario = :usuarioId AND SUBSTR(fecha, 1, INSTR(fecha, '-') - 1) = strftime('%Y', 'now')AND SUBSTR(fecha, INSTR(fecha, '-') + 1, 2) = strftime('%m', 'now')")
-    fun getValorGastosMes(usuarioId: Long): LiveData<Double>
+    @Query("SELECT * FROM Gasto WHERE idUsuario = :usuarioId AND categoria = :categoria AND SUBSTR(fecha, 1, INSTR(fecha, '-') - 1) = strftime('%Y', 'now')AND SUBSTR(fecha, INSTR(fecha, '-') + 1, 2) = strftime('%m', 'now')")
+    fun getGastosMesCategoria(usuarioId: Long, categoria: String):LiveData<List<Gasto>>
 
     @Query("SELECT SUM(valor) FROM Gasto WHERE idUsuario = :usuarioId AND categoria = :categoria AND SUBSTR(fecha, 1, INSTR(fecha, '-') - 1) = strftime('%Y', 'now')AND SUBSTR(fecha, INSTR(fecha, '-') + 1, 2) = strftime('%m', 'now')")
-    fun getGastosMesCategoria(usuarioId: Long, categoria: String):LiveData<Double>
+    fun getValorGastosMesCategoria(usuarioId: Long, categoria: String):LiveData<Double>
+
+    @Query("SELECT SUM(valor) FROM Gasto WHERE idUsuario = :usuarioId AND SUBSTR(fecha, 1, INSTR(fecha, '-') - 1) = strftime('%Y', 'now')AND SUBSTR(fecha, INSTR(fecha, '-') + 1, 2) = strftime('%m', 'now')")
+    fun getValorGastosMes(usuarioId: Long): LiveData<Double>
 }

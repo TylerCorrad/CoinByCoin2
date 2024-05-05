@@ -14,7 +14,7 @@
             tools:context=".DashboardFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="32dp">
+            android:paddingBottom="64dp">
 
         <View
             android:id="@+id/dona1"
@@ -65,6 +65,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bloqueDisponible"
+            android:layout_marginTop="16dp"
             android:layout_marginHorizontal="16dp">
 
             <ImageView
@@ -108,14 +109,23 @@
                 android:text="@string/ceros"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewGastosVarios"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                app:layout_constraintTop_toBottomOf="@id/bloqueGastosVarios"
+                android:visibility="gone"/>
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bloqueAlimentos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bloqueGastosVarios"
-            android:layout_marginHorizontal="16dp">
+            app:layout_constraintTop_toBottomOf="@id/recyclerViewGastosVarios"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp">
 
             <ImageView
                 android:id="@+id/imgAlimentos"
@@ -160,13 +170,24 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewAlimentos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintTop_toBottomOf="@id/bloqueAlimentos"
+                android:visibility="gone"/>
+
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bloqueTransporte"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bloqueAlimentos"
-            android:layout_marginHorizontal="16dp">
+            app:layout_constraintTop_toBottomOf="@id/recyclerViewAlimentos"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp">
 
             <ImageView
                 android:id="@+id/imgTransporte"
@@ -209,14 +230,24 @@
                 android:text="@string/ceros"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewTransporte"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintTop_toBottomOf="@id/bloqueTransporte"
+                android:visibility="gone"/>
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bloqueServicios"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bloqueTransporte"
-            android:layout_marginHorizontal="16dp">
+            app:layout_constraintTop_toBottomOf="@id/recyclerViewTransporte"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp">
 
             <ImageView
                 android:id="@+id/imgServicios"
@@ -260,13 +291,24 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewServicios"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintTop_toBottomOf="@id/bloqueServicios"
+                android:visibility="gone"/>
+
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bloqueMercado"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bloqueServicios"
-            android:layout_marginHorizontal="16dp">
+            app:layout_constraintTop_toBottomOf="@id/recyclerViewServicios"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp">
 
             <ImageView
                 android:id="@+id/imgMercado"
@@ -310,6 +352,15 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewMercado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp"
+                app:layout_constraintTop_toBottomOf="@id/bloqueMercado"
+                android:visibility="gone"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bloqueDisponible"
@@ -359,6 +410,8 @@
                 style="@style/TxtNegroPequenoItalic"
                 android:text="@string/ceros"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
     <com.google.android.material.floatingactionbutton.FloatingActionButton

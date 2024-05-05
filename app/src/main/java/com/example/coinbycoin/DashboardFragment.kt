@@ -14,6 +14,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.coinbycoin.databinding.FragmentDashboardBinding
 import com.example.coinbycoin.ui.theme.CustomSpinnerAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -54,6 +56,36 @@ class DashboardFragment : Fragment() {
             usuarioId?.let {
                 this.usuarioId = it
                 cargarDatos()
+                val bloqueTransporte = binding.bloqueTransporte
+                val bloqueGastosVarios = binding.bloqueGastosVarios
+                val bloqueMercado = binding.bloqueMercado
+                val bloqueServicios = binding.bloqueServicios
+                val bloqueAlimentos = binding.bloqueAlimentos
+                val recyclrerViewTransporte = binding.recyclerViewTransporte
+                val recyclrerViewGastosVarios = binding.recyclerViewGastosVarios
+                val recyclrerViewMercado = binding.recyclerViewMercado
+                val recyclrerViewServicios = binding.recyclerViewServicios
+                val recyclrerViewAlimentos = binding.recyclerViewAlimentos
+
+
+                bloqueTransporte.setOnClickListener{
+                    var visibilidad = false
+                    mostrarListaDeGastos(recyclrerViewTransporte, "Transporte")
+                }
+                bloqueMercado.setOnClickListener{
+                    mostrarListaDeGastos(recyclrerViewMercado, "Mercado")
+                }
+                bloqueServicios.setOnClickListener{
+                    mostrarListaDeGastos(recyclrerViewServicios, "Servicios")
+                }
+                bloqueAlimentos.setOnClickListener{
+                    mostrarListaDeGastos(recyclrerViewAlimentos, "Alimentos")
+                }
+                bloqueGastosVarios.setOnClickListener{
+                    mostrarListaDeGastos(recyclrerViewGastosVarios, "Gastos Varios")
+                }
+
+
             }
         }
         val btnNuevoGasto = view.findViewById<FloatingActionButton>(R.id.floatingActionButton)
@@ -208,6 +240,24 @@ class DashboardFragment : Fragment() {
                 gastadosTextView.setText("${numberFormat.format(cantidadGastos)}$")
                 //cargar circulo general
             }
+        }
+    }
+
+    private fun mostrarListaDeGastos(recyclerView: RecyclerView, categoria: String){
+        gastosViewModel.getGastosMesCategoria(usuarioId, categoria).observe(viewLifecycleOwner){gastosCat ->
+            // Crear un adaptador para el RecyclerView
+            val adapter = GastoAdapter(gastosCat)
+
+            recyclerView.apply {
+                layoutManager = LinearLayoutManager(requireContext())
+                setAdapter(adapter)
+            }
+            if(recyclerView.visibility == View.GONE){
+                recyclerView.visibility = View.VISIBLE
+            }else{
+                recyclerView.visibility = View.GONE
+            }
+
         }
     }
 }

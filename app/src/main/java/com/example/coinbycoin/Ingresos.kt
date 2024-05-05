@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -249,6 +250,7 @@ class Ingresos : Fragment(), IngresosListener {
                     val textViewTitulo = dialogView.findViewById<TextView>(R.id.titulo)
                     val editTextCantidad = dialogView.findViewById<TextInputEditText>(R.id.editTextCantidad)
                     val editTextFecha = dialogView.findViewById<EditText>(R.id.editTextFecha)
+                    val btnEliminarIngreso = dialogView.findViewById<Button>(R.id.btnEliminarIngreso)
                     val dialogModificarIngreso = AlertDialog.Builder(requireContext())
                         .setView(dialogView)
                         .setPositiveButton("Aceptar") { dialog, _ ->
@@ -274,18 +276,9 @@ class Ingresos : Fragment(), IngresosListener {
                         .setNegativeButton("Cancelar") { dialog, _ ->
                             dialog.dismiss()
                         }
-                        .setNeutralButton("Eliminar Ingreso") { dialog, _ ->
-                            lifecycleScope.launch {
-                                withContext(Dispatchers.IO) {
-                                    ingresoViewModel.desactivarIngPasado(ingreso.descripcion)
-                                    ingresoViewModel.eliminarIngreso(ingreso.id)
-                                }
-                            }
-                            Toast.makeText(requireContext(), "Se elimino el ingreso ${ingreso.descripcion}", Toast.LENGTH_SHORT).show()
-                            dialog.dismiss()
-                        }
                         .create()
-                    textViewTitulo.setText("modificar ingreso con descripcion ${ingreso.descripcion}")
+
+                    textViewTitulo.setText("modificar ingreso ${ingreso.descripcion}")
                     val fecha = ingreso.fecha
                     val parts = fecha.split("-")
                     val fechaFormateada = "${parts[2]}/${parts[1]}/${parts[0]}"
@@ -293,6 +286,14 @@ class Ingresos : Fragment(), IngresosListener {
                     editTextFecha.setText(fechaFormateada)
                     editTextFecha.setOnClickListener {
                         showDatePickerDialog(editTextFecha)
+                    }
+                    btnEliminarIngreso.setOnClickListener{
+                        lifecycleScope.launch {
+                            withContext(Dispatchers.IO) {
+                                ingresoViewModel.eliminarIngreso(ingreso.id)
+                            }
+                        }
+                            dialogModificarIngreso.dismiss()
                     }
                     dialogModificarIngreso.show()
                 }

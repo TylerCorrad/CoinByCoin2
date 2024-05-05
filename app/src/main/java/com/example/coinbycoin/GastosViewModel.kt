@@ -36,4 +36,8 @@ class GastosViewModel(application: Application) :AndroidViewModel(application) {
     fun getValorGastosMesCategoria(usuarioId: Long, categoria:String): LiveData<Double>{
         return repository.getValorGastosMesCategoria(usuarioId, categoria)
     }
+
+    fun getGastosMesCategoria(usuarioId: Long, categoria: String):LiveData<List<Gasto>>{
+        return  repository.getGastosMesCategoria(usuarioId, categoria)
+    }
 }

@@ -14,6 +14,7 @@ class GastoRepository(private val gastoDao: GastoDao) {
 
     fun getValorGastosMes(usuarioId: Long): LiveData<Double> = gastoDao.getValorGastosMes(usuarioId)
 
-    fun getValorGastosMesCategoria(usuarioId: Long, categoria:String): LiveData<Double> = gastoDao.getGastosMesCategoria(usuarioId, categoria)
+    fun getValorGastosMesCategoria(usuarioId: Long, categoria:String): LiveData<Double> = gastoDao.getValorGastosMesCategoria(usuarioId, categoria)
 
+    fun getGastosMesCategoria(usuarioId: Long, categoria: String):LiveData<List<Gasto>> = gastoDao.getGastosMesCategoria(usuarioId, categoria)
 }
