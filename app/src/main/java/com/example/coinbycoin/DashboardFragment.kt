@@ -36,8 +36,6 @@ class DashboardFragment : Fragment(), OnItemClickListener {
     private lateinit var sharedViewModel: SharedViewModel
     private lateinit var gastosViewModel: GastosViewModel
     private var disponible: Double = 0.0
-    private var total: Double = 0.0
-    private var gastados: Double = 0.0
 
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
@@ -200,6 +198,8 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                 val color = Color1.parseColor(colorHex)
                 cargarBarraDisp(disponible, barraDisponible, color)
             }else{
+                val disponibleTextView = binding.cantidadDisponible
+                disponibleTextView.setText("0,00$")
                 val barraDisponible = binding.barraDisponible
                 cargarBarraVacia(barraDisponible)
             }
@@ -217,6 +217,8 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val color = Color1.parseColor(colorHex)
                     cargarBarra(cantidadCategoria, barraGastosVarios, color)
                 }else {
+                    val gastosVariosTextView = binding.cantidadGastosVarios
+                    gastosVariosTextView.setText("0,00$")
                     val barraGastosVarios = binding.barraGastosVarios
                     cargarBarraVacia(barraGastosVarios)
                 }
@@ -235,6 +237,8 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val color = Color1.parseColor(colorHex)
                     cargarBarra(cantidadCategoria, barraAlimentos, color)
                 }else {
+                    val AlimentosTextView = binding.cantidadAlimentos
+                    AlimentosTextView.setText("0,00$")
                     val barraAlimentos = binding.barraAlimentos
                     cargarBarraVacia(barraAlimentos)
                 }
@@ -253,6 +257,8 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val color = Color1.parseColor(colorHex)
                     cargarBarra(cantidadCategoria, barraTransporte, color)
                 }else {
+                    val TransporteTextView = binding.cantidadTransporte
+                    TransporteTextView.setText("0,00$")
                     val barraTransporte = binding.barraTransporte
                     cargarBarraVacia(barraTransporte)
                 }
@@ -271,6 +277,8 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val color = Color1.parseColor(colorHex)
                     cargarBarra(cantidadCategoria, barraServicios, color)
                 }else{
+                    val ServiciosTextView = binding.cantidadServicios
+                    ServiciosTextView.setText("0,00$")
                     val barraServicios = binding.barraServicios
                     cargarBarraVacia(barraServicios)
                 }
@@ -289,6 +297,8 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val color = Color1.parseColor(colorHex)
                     cargarBarra(cantidadCategoria, barraMercado, color)
                 }else{
+                    val MercadoTextView = binding.cantidadMercado
+                    MercadoTextView.setText("0,00$")
                     val barraMercado = binding.barraMercado
                     cargarBarraVacia(barraMercado)
                 }
@@ -302,6 +312,10 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                 val gastadosTextView = binding.TxtGastoTotal
                 gastadosTextView.setText("${numberFormat.format(cantidadGastos)}$")
                 cargarDona(cantidadGastos)
+            }else{
+                val gastadosTextView = binding.TxtGastoTotal
+                gastadosTextView.setText("0,00$")
+
             }
         }
     }
