@@ -13,7 +13,7 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -26,7 +26,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import lecho.lib.hellocharts.model.*
-import lecho.lib.hellocharts.view.ColumnChartView
 import java.text.NumberFormat
 import android.graphics.Color as Color1
 
@@ -36,7 +35,6 @@ class DashboardFragment : Fragment(), OnItemClickListener {
     private lateinit var sharedViewModel: SharedViewModel
     private lateinit var gastosViewModel: GastosViewModel
     private var disponible: Double = 0.0
-
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
 
@@ -73,7 +71,6 @@ class DashboardFragment : Fragment(), OnItemClickListener {
 
 
                 bloqueTransporte.setOnClickListener {
-                    var visibilidad = false
                     mostrarListaDeGastos(recyclrerViewTransporte, "Transporte")
                 }
                 bloqueMercado.setOnClickListener {
@@ -194,14 +191,7 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                 val disponibleTextView = binding.cantidadDisponible
                 disponibleTextView.setText("${numberFormat.format(disponible)}$")
                 val barraDisponible = binding.barraDisponible
-                val colorHex = "#87EE2B"
-                val color = Color1.parseColor(colorHex)
-                cargarBarraDisp(disponible, barraDisponible, color)
-            }else{
-                val disponibleTextView = binding.cantidadDisponible
-                disponibleTextView.setText("0,00$")
-                val barraDisponible = binding.barraDisponible
-                cargarBarraVacia(barraDisponible)
+                cargarBarraDisp(disponible, barraDisponible)
             }
         }
         gastosViewModel.getValorGastosMesCategoria(usuarioId, "Gastos Varios")
@@ -213,14 +203,7 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val gastosVariosTextView = binding.cantidadGastosVarios
                     gastosVariosTextView.setText("${numberFormat.format(cantidadCategoria)}$")
                     val barraGastosVarios = binding.barraGastosVarios
-                    val colorHex = "#F66B6B"
-                    val color = Color1.parseColor(colorHex)
-                    cargarBarra(cantidadCategoria, barraGastosVarios, color)
-                }else {
-                    val gastosVariosTextView = binding.cantidadGastosVarios
-                    gastosVariosTextView.setText("0,00$")
-                    val barraGastosVarios = binding.barraGastosVarios
-                    cargarBarraVacia(barraGastosVarios)
+                    cargarBarra(cantidadCategoria, barraGastosVarios)
                 }
             }
 
@@ -233,14 +216,7 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val AlimentosTextView = binding.cantidadAlimentos
                     AlimentosTextView.setText("${numberFormat.format(cantidadCategoria)}$")
                     val barraAlimentos = binding.barraAlimentos
-                    val colorHex = "#FF66C1"
-                    val color = Color1.parseColor(colorHex)
-                    cargarBarra(cantidadCategoria, barraAlimentos, color)
-                }else {
-                    val AlimentosTextView = binding.cantidadAlimentos
-                    AlimentosTextView.setText("0,00$")
-                    val barraAlimentos = binding.barraAlimentos
-                    cargarBarraVacia(barraAlimentos)
+                    cargarBarra(cantidadCategoria, barraAlimentos)
                 }
             }
 
@@ -253,14 +229,8 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val TransporteTextView = binding.cantidadTransporte
                     TransporteTextView.setText("${numberFormat.format(cantidadCategoria)}$")
                     val barraTransporte = binding.barraTransporte
-                    val colorHex = "#339AF0"
-                    val color = Color1.parseColor(colorHex)
-                    cargarBarra(cantidadCategoria, barraTransporte, color)
-                }else {
-                    val TransporteTextView = binding.cantidadTransporte
-                    TransporteTextView.setText("0,00$")
-                    val barraTransporte = binding.barraTransporte
-                    cargarBarraVacia(barraTransporte)
+
+                    cargarBarra(cantidadCategoria, barraTransporte)
                 }
             }
 
@@ -273,14 +243,7 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val ServiciosTextView = binding.cantidadServicios
                     ServiciosTextView.setText("${numberFormat.format(cantidadCategoria)}$")
                     val barraServicios = binding.barraServicios
-                    val colorHex = "#EEB62B"
-                    val color = Color1.parseColor(colorHex)
-                    cargarBarra(cantidadCategoria, barraServicios, color)
-                }else{
-                    val ServiciosTextView = binding.cantidadServicios
-                    ServiciosTextView.setText("0,00$")
-                    val barraServicios = binding.barraServicios
-                    cargarBarraVacia(barraServicios)
+                    cargarBarra(cantidadCategoria, barraServicios)
                 }
             }
 
@@ -293,14 +256,7 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val MercadoTextView = binding.cantidadMercado
                     MercadoTextView.setText("${numberFormat.format(cantidadCategoria)}$")
                     val barraMercado = binding.barraMercado
-                    val colorHex = "#FD8435"
-                    val color = Color1.parseColor(colorHex)
-                    cargarBarra(cantidadCategoria, barraMercado, color)
-                }else{
-                    val MercadoTextView = binding.cantidadMercado
-                    MercadoTextView.setText("0,00$")
-                    val barraMercado = binding.barraMercado
-                    cargarBarraVacia(barraMercado)
+                    cargarBarra(cantidadCategoria, barraMercado)
                 }
             }
 
@@ -382,10 +338,10 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                         val valor = cantidad.toDouble()
 
                         // Realizar la conversión de fecha y guardar los cambios
-                        val parts = fechaOriginal.split("/")
-                        val dia = parts[0].padStart(2, '0')
-                        val mes = parts[1].padStart(2, '0')
-                        val anio = parts[2]
+                        val partes = fechaOriginal.split("/")
+                        val dia = partes[0].padStart(2, '0')
+                        val mes = partes[1].padStart(2, '0')
+                        val anio = partes[2]
                         val fecha = "${anio}-${mes}-${dia}"
                         lifecycleScope.launch {
                             withContext(Dispatchers.IO) {
@@ -425,66 +381,41 @@ class DashboardFragment : Fragment(), OnItemClickListener {
         dialog.show()
     }
 
-    fun cargarBarra(cantidad: Double, barra: ColumnChartView, color: Int) {
+    fun cargarBarra(cantidad: Double, barra: View) {
         gastosViewModel.getValorGastosMes(usuarioId).observe(viewLifecycleOwner) { gastosMes ->
             if (gastosMes != null) {
                 gastosViewModel.getDisponible(usuarioId).observe(viewLifecycleOwner) { disponible ->
                     if (disponible != null) {
-
-                        val gris = ContextCompat.getColor(requireContext(), R.color.gris)
-                        val restante = disponible + gastosMes - cantidad
-                        val barValues = mutableListOf<SubcolumnValue>()
-                        barValues.add(
-                            SubcolumnValue(
-                                cantidad.toFloat(),
-                                color
-                            )
-                        ) // Valor de cantidad
-                        barValues.add(SubcolumnValue(restante.toFloat(), gris)) // Valor de residuo
-
-                        val column = Column(barValues)
-                        val columns = mutableListOf(column)
-
-                        val data = ColumnChartData(columns)
-
-                        // Configurar la apariencia del gráfico de barras
-                        data.isStacked = true // Apilar valores
-                        val axisValues = mutableListOf<AxisValue>()
-                        data.axisXBottom = Axis(axisValues)
-                        data.axisYLeft = Axis()
-
-                        barra.columnChartData = data
+                        val barraGris = binding.barraGrisDisponible
+                        val cien = barraGris.width
+                        val total = disponible + gastosMes
+                        val layoutParams = barra.layoutParams as ConstraintLayout.LayoutParams
+                        layoutParams.width = ((cien*cantidad)/total).toInt()
+                        barra.layoutParams = layoutParams
+                        barra.visibility = View.VISIBLE
                     }
                 }
             }
         }
     }
 
-    fun cargarBarraDisp(cantidad: Double, barra: ColumnChartView, color: Int) {
+    fun cargarBarraDisp(cantidad: Double, barra: View) {
         gastosViewModel.getValorGastosMes(usuarioId).observe(viewLifecycleOwner) { gastosMes ->
             if (gastosMes != null) {
-                val gris = ContextCompat.getColor(requireContext(), R.color.gris)
-                val barValues = mutableListOf<SubcolumnValue>()
                 if( cantidad >= 0) {
-                    barValues.add(SubcolumnValue(cantidad.toFloat(), color)) // Valor de cantidad
+                    val barraGris = binding.barraGrisDisponible
+                    val cien = barraGris.width
+                    val total = gastosMes+cantidad
+                    val layoutParams = barra.layoutParams as ConstraintLayout.LayoutParams
+                    layoutParams.width = ((cien*cantidad)/total).toInt()
+                    barra.layoutParams = layoutParams
+                    barra.visibility = View.VISIBLE
                 }
-                barValues.add(SubcolumnValue(gastosMes.toFloat(), gris)) // Valor de residuo
-
-                val column = Column(barValues)
-                val columns = mutableListOf(column)
-
-                val data = ColumnChartData(columns)
-                data.isStacked = true // Apilar valores
-                val axisValues = mutableListOf<AxisValue>()
-                data.axisXBottom = Axis(axisValues)
-                data.axisYLeft = Axis()
-
-                barra.columnChartData = data
             }
         }
     }
 
-    fun cargarDona(cantidadGastado: Double) {
+    private fun cargarDona(cantidadGastado: Double) {
         gastosViewModel.getDisponible(usuarioId).observe(viewLifecycleOwner) { disponible ->
             gastosViewModel.getValorGastosMesCategoria(usuarioId, "Gastos Varios")
                 .observe(viewLifecycleOwner) { cantGastosVarios ->
@@ -575,26 +506,5 @@ class DashboardFragment : Fragment(), OnItemClickListener {
         )
         val color = Color1.parseColor(categoriasColores[categoria])
         return color
-    }
-
-    fun cargarBarraVacia(barra: ColumnChartView){
-        val gris = ContextCompat.getColor(requireContext(), R.color.gris)
-        val barValues = mutableListOf<SubcolumnValue>()
-        barValues.add(
-            SubcolumnValue(
-                1.toFloat(),
-                gris
-            )
-        )
-        val column = Column(barValues)
-        val columns = mutableListOf(column)
-        val data = ColumnChartData(columns)
-        data.isStacked = true
-        val axisValues = mutableListOf<AxisValue>()
-        data.axisXBottom = Axis(axisValues)
-        data.axisYLeft = Axis()
-
-        barra.columnChartData = data
-
     }
 }

@@ -85,20 +85,31 @@
                 android:text="@string/gastos_varios"/>
 
 
-            <lecho.lib.hellocharts.view.ColumnChartView
-                android:id="@+id/barraGastosVarios"
+            <View
+                android:id="@+id/barraGrisGastosVarios"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/imgGastosVarios"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp"
+                android:background="@color/gris"/>
+
+            <View
+                android:id="@+id/barraGastosVarios"
+                android:layout_width="0dp"
+                android:layout_height="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imgGastosVarios"
+                android:layout_marginTop="8dp"
+                android:background="@color/Gastos_Varios"
+                android:visibility="invisible"/>
 
 
             <TextView
                 android:id="@+id/cantidadGastosVarios"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/barraGastosVarios"
+                app:layout_constraintTop_toBottomOf="@id/barraGrisGastosVarios"
                 app:layout_constraintStart_toEndOf="@id/imgGastosVarios"
                 android:layout_marginStart="16dp"
                 style="@style/TxtNegroPequenoItalic"
@@ -144,13 +155,25 @@
 
 
 
-            <lecho.lib.hellocharts.view.ColumnChartView
-                android:id="@+id/barraAlimentos"
+            <View
+                android:id="@+id/barraGrisAlimentos"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/imgAlimentos"
+                android:background="@color/gris"
                 android:layout_marginTop="8dp"/>
+
+
+            <View
+                android:id="@+id/barraAlimentos"
+                android:layout_width="0dp"
+                android:layout_height="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imgAlimentos"
+                android:background="@color/Alimentos"
+                android:layout_marginTop="8dp"
+                android:visibility="invisible"/>
 
 
             <TextView
@@ -205,20 +228,32 @@
                 android:text="@string/transporte"/>
 
 
-            <lecho.lib.hellocharts.view.ColumnChartView
-                android:id="@+id/barraTransporte"
+            <View
+                android:id="@+id/barraGrisTransporte"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/imgTransporte"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp"
+                android:background="@color/gris"/>
+
+
+            <View
+                android:id="@+id/barraTransporte"
+                android:layout_width="0dp"
+                android:layout_height="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imgTransporte"
+                android:layout_marginTop="8dp"
+                android:background="@color/Transporte"
+                android:visibility="invisible"/>
 
 
             <TextView
                 android:id="@+id/cantidadTransporte"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/barraTransporte"
+                app:layout_constraintTop_toBottomOf="@id/barraGrisTransporte"
                 app:layout_constraintStart_toEndOf="@id/imgTransporte"
                 android:layout_marginStart="16dp"
                 style="@style/TxtNegroPequenoItalic"
@@ -264,13 +299,24 @@
                 android:text="@string/servicios"/>
 
 
-            <lecho.lib.hellocharts.view.ColumnChartView
-                android:id="@+id/barraServicios"
+            <View
+                android:id="@+id/barraGrisServicios"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/imgServicios"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp"
+                android:background="@color/gris"/>
+
+            <View
+                android:id="@+id/barraServicios"
+                android:layout_width="0dp"
+                android:layout_height="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imgServicios"
+                android:layout_marginTop="8dp"
+                android:background="@color/Servicios"
+                android:visibility="invisible"/>
 
 
             <TextView
@@ -326,13 +372,24 @@
 
 
 
-            <lecho.lib.hellocharts.view.ColumnChartView
-                android:id="@+id/barraMercado"
+            <View
+                android:id="@+id/barraGrisMercado"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/imgMercado"
+                android:background="@color/gris"
                 android:layout_marginTop="8dp"/>
+
+            <View
+                android:id="@+id/barraMercado"
+                android:layout_width="0dp"
+                android:layout_height="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imgMercado"
+                android:background="@color/Mercado"
+                android:layout_marginTop="8dp"
+                android:visibility="invisible"/>
 
 
             <TextView
@@ -385,14 +442,25 @@
                 style="@style/TxtNegroMedianoItalic"
                 android:text="@string/disponible"/>
 
-            <lecho.lib.hellocharts.view.ColumnChartView
+            <View
+                android:id="@+id/barraGrisDisponible"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imgDisponible"
+                android:layout_marginTop="8dp"
+                android:background="@color/gris"/>
+
+
+            <View
                 android:id="@+id/barraDisponible"
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/imgDisponible"
                 android:layout_marginTop="8dp"
-                />
+                android:background="@color/disponible"
+                android:visibility="invisible"/>
 
 
             <TextView
