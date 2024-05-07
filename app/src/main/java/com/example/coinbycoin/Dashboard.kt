@@ -68,7 +68,7 @@ class Dashboard : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflar el menú; esto agrega elementos a la ActionBar si está presente.
+        // Inflar el menú
         menuInflater.inflate(R.menu.dashboard, menu)
         return true
     }

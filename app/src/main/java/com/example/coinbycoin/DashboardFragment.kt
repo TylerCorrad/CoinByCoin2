@@ -229,6 +229,7 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val TransporteTextView = binding.cantidadTransporte
                     TransporteTextView.setText("${numberFormat.format(cantidadCategoria)}$")
                     val barraTransporte = binding.barraTransporte
+
                     cargarBarra(cantidadCategoria, barraTransporte)
                 }
             }
@@ -267,6 +268,10 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                 val gastadosTextView = binding.TxtGastoTotal
                 gastadosTextView.setText("${numberFormat.format(cantidadGastos)}$")
                 cargarDona(cantidadGastos)
+            }else{
+                val gastadosTextView = binding.TxtGastoTotal
+                gastadosTextView.setText("0,00$")
+
             }
         }
     }
