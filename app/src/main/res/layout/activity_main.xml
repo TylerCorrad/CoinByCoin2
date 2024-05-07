@@ -19,8 +19,8 @@
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:src="@drawable/coin"
-            android:scaleType="centerCrop"
-            android:padding="30dp"
+            android:scaleType="fitCenter"
+            android:padding="20dp"
             android:background="@drawable/circulo"
             android:contentDescription="@string/desc_logo" /> <!-- Establece un fondo circular -->
     </FrameLayout>

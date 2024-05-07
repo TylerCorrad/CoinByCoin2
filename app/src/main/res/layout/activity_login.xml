@@ -25,9 +25,8 @@
                 android:id="@+id/logo"
                 android:layout_width="250dp"
                 android:layout_height="250dp"
-                android:src="@drawable/usuario"
-                android:scaleType="centerCrop"
-                android:padding="60dp"
+                android:src="@drawable/cuenta"
+                android:scaleType="fitCenter"
                 android:background="@drawable/circulo"
                 android:contentDescription="@string/desc_usuario" /> <!-- Establece un fondo circular -->
         </FrameLayout>

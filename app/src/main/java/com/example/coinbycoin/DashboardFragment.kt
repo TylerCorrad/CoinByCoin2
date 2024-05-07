@@ -35,9 +35,6 @@ class DashboardFragment : Fragment(), OnItemClickListener {
     private lateinit var sharedViewModel: SharedViewModel
     private lateinit var gastosViewModel: GastosViewModel
     private var disponible: Double = 0.0
-    private var total: Double = 0.0
-    private var gastados: Double = 0.0
-
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
 
