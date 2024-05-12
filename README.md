@@ -1,6 +1,7 @@
 
 # Coin by Coin: Aplicación móvil de finanzas personales
 CoinbyCoin es una aplicación móvil desarrollada en Android Studio cuyo objetivo es gestionar tus finanzas personales de manera rápida y accesible. Aquí puedes registrar tus ingresos y gastos según lo necesites y visualizar el estado de tus finanzas actuales de manera dinámica.
+Figma con el prototipo de la aplicación: https://www.figma.com/file/qgx6PWhYO1YZ4VwTMtfYzC/Untitled?type=design&node-id=0%3A1&mode=design&t=ZNo1JdNkhJo3w1xb-1
 
 ## Estado del proyecto
 Actualmente, el proyecto se encuentra en estado de desarrollo. Funciones como las secciones de reporte y dashboard están en construcción y no reflejan el estado final de la aplicación.
