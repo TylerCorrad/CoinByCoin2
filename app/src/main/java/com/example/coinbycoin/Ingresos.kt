@@ -6,28 +6,25 @@ import android.icu.util.Calendar
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import com.example.coinbycoin.databinding.FragmentIngresosBinding
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.coinbycoin.databinding.FragmentIngresosBinding
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.NumberFormat
-import java.time.LocalDate
 import java.time.LocalDate.now
 
 class Ingresos : Fragment(), IngresosListener {
@@ -353,8 +350,8 @@ class Ingresos : Fragment(), IngresosListener {
         // Crear y mostrar el DatePickerDialog
         val datePickerDialog = DatePickerDialog(
             requireContext(),
-            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                val fechaSeleccionada = "$dayOfMonth/${monthOfYear + 1}/$year"
+            { _, year1, monthOfYear, dayOfMonth1 ->
+                val fechaSeleccionada = "$dayOfMonth1/${monthOfYear + 1}/$year1"
                 editTextFecha.setText(fechaSeleccionada)
             },
             year,

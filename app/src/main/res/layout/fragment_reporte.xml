@@ -7,44 +7,165 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".Ingresos">
+        tools:context=".Ingresos"
+        android:paddingBottom="64dp">
 
-            <TextView
-                android:id="@+id/diario"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="16dp"
-                android:text="@string/en_construcci_n"
-                style="@style/TxtVerdeGrandeNegrita"
-                android:textSize="45sp"
-                android:layout_marginTop="32dp"/>
 
-        <ImageView
-            android:id="@+id/imagen"
+        <TextView
+            android:id="@+id/txtSemanal"
+            android:text="@string/semanal"
+            style="@style/TxtVerdeMedianoItalic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/diario"
-            android:src="@drawable/engineer2"
-            android:paddingHorizontal="80dp"
+            android:layout_margin="16dp"
+            />
+
+
+        <ImageButton
+            android:id="@+id/btonAtrasSem"
+            android:layout_width="100dp"
+            android:layout_height="32dp"
+            android:src="@drawable/atras"
+            android:background="@drawable/bg_btn_borde_verde"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/txtSemanal"
+            app:layout_constraintEnd_toStartOf="@id/btonAdelanteSem"
+            android:layout_marginEnd="16dp"/>
+
+
+        <ImageButton
+            android:id="@+id/btonAdelanteSem"
+            android:layout_width="100dp"
+            android:layout_height="32dp"
+            android:src="@drawable/adelante"
+            android:background="@drawable/bg_btn_borde_verde"
+            app:layout_constraintBottom_toBottomOf="@id/txtSemanal"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="32dp"/>
+
+
+        <lecho.lib.hellocharts.view.LineChartView
+            android:id="@+id/graficoLineasSemanal"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btonAdelanteSem"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="16dp"
             />
 
         <TextView
-            android:id="@+id/lo_sentimos"
+            android:id="@+id/noDataSem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/graficoLineasSemanal"
+            app:layout_constraintEnd_toEndOf="@id/graficoLineasSemanal"
+            app:layout_constraintTop_toTopOf="@id/graficoLineasSemanal"
+            app:layout_constraintBottom_toBottomOf="@id/graficoLineasSemanal"
+            android:text="@string/no_data"
+            android:gravity="center"
+            style="@style/TxtNegroMedianoItalic2"
+            android:layout_margin="32dp"
+            android:visibility="gone"/>
+
+
+            />
+
+        <TextView
+            android:id="@+id/txtMensual"
+            android:text="@string/mensual"
+            style="@style/TxtVerdeMedianoItalic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/graficoLineasSemanal"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="16dp"
+            />
+
+
+        <ImageButton
+            android:id="@+id/btonAtrasMes"
+            android:layout_width="100dp"
+            android:layout_height="32dp"
+            android:src="@drawable/atras"
+            android:background="@drawable/bg_btn_borde_verde"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/txtMensual"
+            app:layout_constraintEnd_toStartOf="@id/btonAdelanteMes"
+            android:layout_marginEnd="16dp"/>
+
+
+        <ImageButton
+            android:id="@+id/btonAdelanteMes"
+            android:layout_width="100dp"
+            android:layout_height="32dp"
+            android:src="@drawable/adelante"
+            android:background="@drawable/bg_btn_borde_verde"
+            app:layout_constraintBottom_toBottomOf="@id/txtMensual"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="32dp"/>
+
+
+        <lecho.lib.hellocharts.view.LineChartView
+            android:id="@+id/graficoLineasMensual"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imagen"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginHorizontal="32dp"
-            android:layout_marginBottom="16dp"
-            android:gravity="center"
-            android:text="@string/sorry"
-            style="@style/TxtNegroMedianoItalic2"/>
+            app:layout_constraintTop_toBottomOf="@id/btonAdelanteMes"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="16dp"
+            />
+
+        <TextView
+            android:id="@+id/txtAnual"
+            android:text="@string/anual"
+            style="@style/TxtVerdeMedianoItalic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/graficoLineasMensual"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="16dp"
+            />
+
+
+        <ImageButton
+            android:id="@+id/btonAtrasAn"
+            android:layout_width="100dp"
+            android:layout_height="32dp"
+            android:src="@drawable/atras"
+            android:background="@drawable/bg_btn_borde_verde"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/txtAnual"
+            app:layout_constraintEnd_toStartOf="@id/btonAdelanteAn"
+            android:layout_marginEnd="16dp"/>
+
+
+        <ImageButton
+            android:id="@+id/btonAdelanteAn"
+            android:layout_width="100dp"
+            android:layout_height="32dp"
+            android:src="@drawable/adelante"
+            android:background="@drawable/bg_btn_borde_verde"
+            app:layout_constraintBottom_toBottomOf="@id/txtAnual"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="32dp"/>
+
+
+        <lecho.lib.hellocharts.view.LineChartView
+            android:id="@+id/graficoLineasAnual"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btonAdelanteAn"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

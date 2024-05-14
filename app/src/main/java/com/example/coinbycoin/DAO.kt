@@ -96,4 +96,7 @@ interface GastoDao {
 
     @Query("UPDATE gasto SET categoria = :categoria, valor = :valor, descripcion = :descripcion, fecha = :fecha WHERE id == :id")
     fun modificarGasto(id: Long, categoria: String, valor: Double, descripcion: String, fecha: String)
+
+    @Query("SELECT * FROM Gasto WHERE idUsuario = :idUsuario AND DATE(fecha) BETWEEN DATE(:fechaInf) AND DATE(:fechaSup)")
+    fun getGastosPorFechas(idUsuario: Long, fechaInf: String, fechaSup: String): LiveData<List<Gasto>>
 }
