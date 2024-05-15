@@ -1,5 +1,6 @@
 package com.example.coinbycoin
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -10,7 +11,6 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.coinbycoin.databinding.FragmentReporteBinding
-import lecho.lib.hellocharts.formatter.SimpleAxisValueFormatter
 import lecho.lib.hellocharts.model.Axis
 import lecho.lib.hellocharts.model.Line
 import lecho.lib.hellocharts.model.LineChartData
@@ -18,6 +18,7 @@ import lecho.lib.hellocharts.model.PointValue
 import lecho.lib.hellocharts.view.LineChartView
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.Month
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
 import android.graphics.Color as Color1
@@ -62,7 +63,7 @@ class Reporte : Fragment() {
                 val atrasAn = binding.btonAtrasAn
                 var fechaActual = LocalDate.now()
                 Log.d("FragmentReporte", "fecha de referencia: $fechaActual")
-                val categorias = listOf<String>("disponible", "Gastos Varios", "Alimentos", "Transporte", "Servicios", "Mercado")
+                listOf<String>("disponible", "Gastos Varios", "Alimentos", "Transporte", "Servicios", "Mercado")
 
                 adelanteSem.setOnClickListener {
                     fechaActual = fechaActual.plusWeeks(1)
@@ -96,6 +97,7 @@ class Reporte : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.O)
     fun actualizarGrafico(fechaActual: LocalDate, tiempo: String){
         Log.d("FragmentReporte", "fecha de referencia: $fechaActual, tiempo: $tiempo")
@@ -103,48 +105,82 @@ class Reporte : Fragment() {
         when (tiempo){
             "Semanal" ->{
                 lineChartReporte = binding.graficoLineasSemanal
-                var fechaInf = periodoDeTiempo(tiempo, fechaActual).first.toString()
-                var fechaSup = periodoDeTiempo(tiempo, fechaActual).second.toString()
-                val formato = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                val fechaInfFormateada  = fechaInf.format(formato)
-                val fechaSupFormateada = fechaSup.format(formato)
+                val fechaInf = periodoDeTiempo(tiempo, fechaActual).first
+                val fechaSup = periodoDeTiempo(tiempo, fechaActual).second
+                val formato1 = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                val fechaInfFormateada  = fechaInf.toString().format(formato1)
+                val fechaSupFormateada = fechaSup.toString().format(formato1)
+                val descSem = binding.descSem
+                val diaInf = fechaInf.dayOfMonth
+                val diaSup = fechaSup.dayOfMonth
+                val mes = extraerMes(fechaSup)
+                val anio = fechaActual.year
+                descSem.setText("semana del $diaInf-$diaSup de $mes del $anio")
                 Log.d("FragmentReporte", "rango: $fechaInfFormateada a $fechaSupFormateada")
                 gastosViewModel.getGastosPorFechas(usuarioId, fechaInfFormateada, fechaSupFormateada).observe(viewLifecycleOwner){listaSem ->
-                    cargarGraficoLineasSem(lineChartReporte, convertirMapaALista(getDatosPorCategoria(listaSem)))
+                    cargarGraficoLineasSem(lineChartReporte, convertirMapaALista(getDatosPorCategoria(listaSem)), fechaInfFormateada, fechaSupFormateada)
                     Log.d("FragmentReporte", "lista gastos: $listaSem")
                 }
             }
             "Mensual" -> {
                 lineChartReporte = binding.graficoLineasMensual
-                var fechaInf = periodoDeTiempo(tiempo, fechaActual).first.toString()
-                var fechaSup = periodoDeTiempo(tiempo, fechaActual).second.toString()
+                val fechaInf = periodoDeTiempo(tiempo, fechaActual).first
+                val fechaSup = periodoDeTiempo(tiempo, fechaActual).second
                 val formato = DateTimeFormatter.ofPattern("yyyy-mm-dd")
-                val fechaInfFormateada  = fechaInf.format(formato)
-                val fechaSupFormateada = fechaSup.format(formato)
+                val fechaInfFormateada  = fechaInf.toString().format(formato)
+                val fechaSupFormateada = fechaSup.toString().format(formato)
+                val descSem = binding.descMes
+                val mes = extraerMes(fechaActual)
+                val anio = fechaActual.year
+                descSem.setText("$mes de $anio")
+
                 Log.d("FragmentReporte", "rango: $fechaInfFormateada a $fechaSupFormateada")
                 gastosViewModel.getGastosPorFechas(usuarioId, fechaInfFormateada, fechaSupFormateada).observe(viewLifecycleOwner){listaMes ->
-                    cargarGraficoLineasMes(lineChartReporte, convertirMapaALista(getDatosPorCategoria(listaMes)))
+                    cargarGraficoLineasMes(lineChartReporte, convertirMapaALista(getDatosPorCategoria(listaMes)), fechaInfFormateada, fechaSupFormateada)
                     Log.d("FragmentReporte", "lista gastos: $listaMes")
                 }
             }
             "Anual" -> {
                 lineChartReporte = binding.graficoLineasAnual
-                var fechaInf = periodoDeTiempo(tiempo, fechaActual).first.toString()
-                var fechaSup = periodoDeTiempo(tiempo, fechaActual).second.toString()
+                val fechaInf = periodoDeTiempo(tiempo, fechaActual).first.toString()
+                val fechaSup = periodoDeTiempo(tiempo, fechaActual).second.toString()
                 val formato = DateTimeFormatter.ofPattern("yyyy-mm-dd")
                 val fechaInfFormateada  = fechaInf.format(formato)
                 val fechaSupFormateada = fechaSup.format(formato)
+                val descSem = binding.descAn
+                val anio = fechaActual.year
+                descSem.setText("$anio")
                 Log.d("FragmentReporte", "rango: $fechaInfFormateada a $fechaSupFormateada")
                 gastosViewModel.getGastosPorFechas(usuarioId, fechaInfFormateada, fechaSupFormateada).observe(viewLifecycleOwner){listaAn ->
                     Log.d("FragmentReporte", "lista gastos: $listaAn")
-                    cargarGraficoLineasAn(lineChartReporte, convertirMapaALista(getDatosPorCategoria(listaAn)))
+                    cargarGraficoLineasAn(lineChartReporte, convertirMapaALista(getDatosPorCategoria(listaAn)), fechaInfFormateada, fechaSupFormateada)
                 }
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun extraerMes(fecha: LocalDate): String{
+        val mes = when(fecha.month){
+            Month.JANUARY -> "Enero"
+            Month.FEBRUARY -> "Febrero"
+            Month.MARCH -> "Marzo"
+            Month.APRIL -> "Abril"
+            Month.MAY -> "Mayo"
+            Month.JUNE -> "Junio"
+            Month.JULY -> "Julio"
+            Month.AUGUST -> "Agosto"
+            Month.SEPTEMBER -> "Septiembre"
+            Month.OCTOBER -> "Octubre"
+            Month.NOVEMBER -> "Noviembre"
+            Month.DECEMBER -> "Diciembre"
+            null -> "null"
+        }
+        return mes
+    }
+
     private fun convertirMapaALista(datosPorCategoria: Map<String, Map<String, Double>>): Map<String, List<Pair<String, Double>>> {
-        var listaDatosPorCategoria = mutableMapOf<String, List<Pair<String,Double>>>()
+        val listaDatosPorCategoria = mutableMapOf<String, List<Pair<String,Double>>>()
 
         for ((categoria, datos) in datosPorCategoria) {
             val listaDatos = datos.toList()
@@ -181,7 +217,6 @@ class Reporte : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun periodoDeTiempo(tiempo: String, fechaActual: LocalDate): Pair<LocalDate, LocalDate> {
-        val fecha = fechaActual
         return when (tiempo) {
             "Semanal" -> {
                 val inicioSemana = fechaActual.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
@@ -202,115 +237,179 @@ class Reporte : Fragment() {
         }
     }
 
-    fun cargarGraficoLineasSem(chartView: LineChartView, datosPorCategoria: Map<String, List<Pair<String, Double>>>) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun cargarGraficoLineasSem(chartView: LineChartView, datosPorCategoria: Map<String, List<Pair<String, Double>>>, fechaInf: String, fechaSup: String) {
         val lineData = LineChartData()
 
         val lineas = mutableListOf<Line>() // Lista para almacenar todas las líneas
 
         for ((categoria, datos) in datosPorCategoria) {
             val line = Line()
-            line.values = generarPuntos(datos)
+            line.values = generarPuntosSem(datos, fechaInf, fechaSup)
             line.color = getColorCategoria(categoria)
             line.strokeWidth = 2
             line.pointRadius = 4
-            line.isCubic = true
+            line.isCubic = false
+            line.hasLabels()
             lineas.add(line) // Agregar la línea a la lista
         }
 
-        lineData.lines = lineas // Asignar la lista de líneas al LineChartData
-
         // Configuración del eje X (fecha)
-        val axisX = Axis()
-        // Configura aquí las etiquetas y otros aspectos del eje X
+        val axisX = Axis().apply {
+            setHasLines(true)
+        }
 
         // Configuración del eje Y (valor)
-        val axisY = Axis()
-        // Configura aquí las etiquetas y otros aspectos del eje Y
+        val axisY = Axis().apply {
+            setHasLines(true)
+        }
 
+        lineData.lines = lineas // Asignar la lista de líneas al LineChartData
         lineData.axisXBottom = axisX
         lineData.axisYLeft = axisY
 
         chartView.lineChartData = lineData
-    }
-    fun cargarGraficoLineasMes(chartView: LineChartView, datosPorCategoria: Map<String, List<Pair<String, Double>>>) {
-        val lineData1 = LineChartData()
-
-        val lineas = mutableListOf<Line>() // Lista para almacenar todas las líneas
-
-        for ((categoria, datos) in datosPorCategoria) {
-            val line = Line()
-            line.values = generarPuntos(datos)
-            line.color = getColorCategoria(categoria)
-            line.strokeWidth = 2
-            line.pointRadius = 4
-            line.isCubic = true
-            lineas.add(line) // Agregar la línea a la lista
+        val noData = binding.noDataSem
+        if(isChartEmpty(chartView)){
+            noData.visibility = View.VISIBLE
+        } else {
+            // Ocultar el texto  aviso
+            noData.visibility = View.GONE
         }
-
-        lineData1.lines = lineas // Asignar la lista de líneas al LineChartData
-
-        // Configuración del eje X (fecha)
-        val axisX = Axis()
-        var formatter: SimpleAxisValueFormatter = SimpleAxisValueFormatter()
-
-
-        // Configuración del eje Y (valor)
-        val axisY = Axis()
-        axisY.setMaxLabelChars(5)
-
-        lineData1.axisXBottom = axisX
-        lineData1.axisYLeft = axisY
-
-        chartView.lineChartData = lineData1
     }
 
-    fun cargarGraficoLineasAn(chartView: LineChartView, datosPorCategoria: Map<String, List<Pair<String, Double>>>) {
-        val lineData2 = LineChartData()
-
-        val lineas = mutableListOf<Line>() // Lista para almacenar todas las líneas
-
-        for ((categoria, datos) in datosPorCategoria) {
-            val line = Line()
-            line.values = generarPuntos(datos)
-            line.color = getColorCategoria(categoria)
-            line.strokeWidth = 2
-            line.pointRadius = 4
-            line.isCubic = true
-            lineas.add(line) // Agregar la línea a la lista
-        }
-
-        lineData2.lines = lineas // Asignar la lista de líneas al LineChartData
-
-        // Configuración del eje X (fecha)
-        val axisX = Axis()
-        // Configura aquí las etiquetas y otros aspectos del eje X
-
-        // Configuración del eje Y (valor)
-        val axisY = Axis()
-        // Configura aquí las etiquetas y otros aspectos del eje Y
-
-        lineData2.axisXBottom = axisX
-        lineData2.axisYLeft = axisY
-
-        chartView.lineChartData = lineData2
-    }
-
-
-    // Función para generar los puntos a partir de los datos de fecha y valor
-    fun generarPuntos(datos: List<Pair<String, Double>>): MutableList<PointValue> {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun generarPuntosSem(datos: List<Pair<String, Double>>, fechaInf: String, fechaSup: String): MutableList<PointValue> {
         val puntos = mutableListOf<PointValue>()
-        // Iterar sobre los datos y asignar un índice a cada fecha
-        var indice = 0
-        val fechaIndiceMap = mutableMapOf<String, Int>()
-        datos.forEach { (fecha, _) ->
-            fechaIndiceMap[fecha] = indice
-            indice++
-        }
-        // Generar los puntos con los valores de fecha y valor
-        datos.forEach { (fecha, valor) ->
-            val x = fechaIndiceMap[fecha]!!.toFloat() // Obtener el índice de la fecha
+        val fechaInfLocalDate = LocalDate.parse(fechaInf)
+        val fechaSupLocalDate = LocalDate.parse(fechaSup)
+        val diasEnIntervalo = fechaSupLocalDate.toEpochDay() - fechaInfLocalDate.toEpochDay() + 1
+        val valorPorFecha = diasEnIntervalo / datos.size
+        var fecha = fechaInfLocalDate
+
+        datos.forEachIndexed { index, (_, valor) ->
+            val x = index.toFloat()
             val y = valor.toFloat()
             puntos.add(PointValue(x, y))
+            fecha = fecha.plusDays(valorPorFecha)
+        }
+        return puntos
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun cargarGraficoLineasMes(chartView: LineChartView, datosPorCategoria: Map<String, List<Pair<String, Double>>>, fechaInf: String, fechaSup: String) {
+        val lineData = LineChartData()
+
+        val lineas = mutableListOf<Line>() // Lista para almacenar todas las líneas
+
+        for ((categoria, datos) in datosPorCategoria) {
+            val line = Line()
+            line.values = generarPuntosMes(datos, fechaInf, fechaSup)
+            line.color = getColorCategoria(categoria)
+            line.strokeWidth = 2
+            line.pointRadius = 4
+            line.isCubic = false
+            line.hasLabels()
+            lineas.add(line) // Agregar la línea a la lista
+        }
+
+        // Configuración del eje X (fecha)
+        val axisX = Axis().apply {
+            setHasLines(true)
+        }
+
+        // Configuración del eje Y (valor)
+        val axisY = Axis().apply {
+            setHasLines(true)
+        }
+
+        lineData.lines = lineas // Asignar la lista de líneas al LineChartData
+        lineData.axisXBottom = axisX
+        lineData.axisYLeft = axisY
+
+        chartView.lineChartData = lineData
+        val noData = binding.noDataMes
+        if(isChartEmpty(chartView)){
+            noData.visibility = View.VISIBLE
+        } else {
+            // Ocultar el texto  aviso
+            noData.visibility = View.GONE
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun generarPuntosMes(datos: List<Pair<String, Double>>, fechaInf: String, fechaSup: String): MutableList<PointValue> {
+        val puntos = mutableListOf<PointValue>()
+        val fechaInfLocalDate = LocalDate.parse(fechaInf)
+        val fechaSupLocalDate = LocalDate.parse(fechaSup)
+        val diasEnIntervalo = fechaSupLocalDate.dayOfMonth - fechaInfLocalDate.dayOfMonth + 1
+        val valorPorFecha = diasEnIntervalo / datos.size
+        var fecha = fechaInfLocalDate
+
+        datos.forEachIndexed { index, (_, valor) ->
+            val x = index.toFloat()
+            val y = valor.toFloat()
+            puntos.add(PointValue(x, y))
+            fecha = fecha.plusDays(valorPorFecha.toLong())
+        }
+        return puntos
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun cargarGraficoLineasAn(chartView: LineChartView, datosPorCategoria: Map<String, List<Pair<String, Double>>>, fechaInf: String, fechaSup: String) {
+        val lineData = LineChartData()
+
+        val lineas = mutableListOf<Line>() // Lista para almacenar todas las líneas
+
+        for ((categoria, datos) in datosPorCategoria) {
+            val line = Line()
+            line.values = generarPuntosAn(datos, fechaInf, fechaSup)
+            line.color = getColorCategoria(categoria)
+            line.strokeWidth = 2
+            line.pointRadius = 4
+            line.isCubic = false
+            line.hasLabels()
+            lineas.add(line) // Agregar la línea a la lista
+        }
+
+        // Configuración del eje X (fecha)
+        val axisX = Axis().apply {
+            setHasLines(true)
+        }
+
+        // Configuración del eje Y (valor)
+        val axisY = Axis().apply {
+            setHasLines(true)
+        }
+
+        lineData.lines = lineas // Asignar la lista de líneas al LineChartData
+        lineData.axisXBottom = axisX
+        lineData.axisYLeft = axisY
+
+        chartView.lineChartData = lineData
+        val noData = binding.noDataAn
+        if(isChartEmpty(chartView)){
+            noData.visibility = View.VISIBLE
+        } else {
+            // Ocultar el texto  aviso
+            noData.visibility = View.GONE
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun generarPuntosAn(datos: List<Pair<String, Double>>, fechaInf: String, fechaSup: String): MutableList<PointValue> {
+        val puntos = mutableListOf<PointValue>()
+        val fechaInfLocalDate = LocalDate.parse(fechaInf)
+        val fechaSupLocalDate = LocalDate.parse(fechaSup)
+        val diasEnIntervalo = fechaSupLocalDate.dayOfYear - fechaInfLocalDate.dayOfYear + 1
+        val valorPorFecha = diasEnIntervalo / datos.size
+        var fecha = fechaInfLocalDate
+
+        datos.forEachIndexed { index, (_, valor) ->
+            val x = index.toFloat()
+            val y = valor.toFloat()
+            puntos.add(PointValue(x, y))
+            fecha = fecha.plusDays(valorPorFecha.toLong())
         }
         return puntos
     }
@@ -325,6 +424,21 @@ class Reporte : Fragment() {
         )
         val color = Color1.parseColor(categoriasColores[categoria])
         return color // Devuelve el color correspondiente a la categoría
+    }
+
+    fun isChartEmpty(lineChartView: LineChartView): Boolean {
+        val lineChartData = lineChartView.lineChartData
+        if (lineChartData != null) {
+            val lines = lineChartData.lines
+            if (lines != null && lines.isNotEmpty()) {
+                for (line in lines) {
+                    if (line.values.size > 1) {
+                        return false
+                    }
+                }
+            }
+        }
+        return true
     }
 
     override fun onDestroyView() {

@@ -116,6 +116,13 @@
         <item name="android:textStyle">italic</item>
     </style>
 
+
+    <style name="TxtGrisPequenoItalic">
+        <item name="android:textColor">@color/texto2</item>
+        <item name="android:textSize">23sp</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
     <style name="TxtGrisGrande">
         <item name="android:textColor">@color/texto2</item>
         <item name="android:textSize">60sp</item>
