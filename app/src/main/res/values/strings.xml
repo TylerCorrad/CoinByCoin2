@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Coin by Coin</string>
     <string name="texto_prueba">Texto de prueba</string>
     <string name="hint_prueba">Hint de prueba</string>
@@ -33,7 +33,7 @@
     <string name="semanal">Semanal</string>
     <string name="Diario">Diario</string>
     <string name="mensual">Mensual</string>
-    <string name="anual">Anual</string>
+    <string name="anual" tools:ignore="Typos">Anual</string>
     <string name="navigation_drawer_open">Abrir menú</string>
     <string name="navigation_drawer_close">Cerrar menú</string>
     <string name="inicio">Inicio</string>
@@ -69,6 +69,12 @@
         <item>Mercado</item>
     </string-array>
 
+    <string-array name="tiempos">
+        <item>Semanal</item>
+        <item>Mensual</item>
+        <item tools:ignore="Typos">Anual</item>
+    </string-array>
+
     <string name="selec_cat">categoria</string>
     <string name="cantidad">cantidad</string>
     <string name="fecha">fecha</string>
@@ -87,4 +93,8 @@
     <string name="eliminar_gasto1">eliminar gasto</string>
     <string name="en_construcci_n">En construcción</string>
     <string name="sorry">Lo sentimos, actualmente esta sección se encuentra en estado de desarrollo</string>
+    <string name="reporte_de_gastos">Reporte de gastos</string>
+    <string name="no_data">No hay datos suficientes para generar este grafico</string>
+    <string name="flecha_atras">flecha hacia atrás</string>
+    <string name="flecha_adelante">flecha hacia adelante</string>
 </resources>

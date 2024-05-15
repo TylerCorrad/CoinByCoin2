@@ -167,9 +167,9 @@ class DashboardFragment : Fragment(), OnItemClickListener {
         // Crear y mostrar el DatePickerDialog
         val datePickerDialog = DatePickerDialog(
             requireContext(),
-            DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            { _, year1, monthOfYear, dayOfMonth1 ->
                 // Aquí obtienes la fecha seleccionada y la estableces en el EditText
-                val fechaSeleccionada = "$dayOfMonth/${monthOfYear + 1}/$year"
+                val fechaSeleccionada = "$dayOfMonth1/${monthOfYear + 1}/$year1"
                 editTextFecha.setText(fechaSeleccionada)
             },
             year,
@@ -229,7 +229,6 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                     val TransporteTextView = binding.cantidadTransporte
                     TransporteTextView.setText("${numberFormat.format(cantidadCategoria)}$")
                     val barraTransporte = binding.barraTransporte
-
                     cargarBarra(cantidadCategoria, barraTransporte)
                 }
             }
@@ -267,11 +266,7 @@ class DashboardFragment : Fragment(), OnItemClickListener {
                 val cantidadGastos = gastosMes
                 val gastadosTextView = binding.TxtGastoTotal
                 gastadosTextView.setText("${numberFormat.format(cantidadGastos)}$")
-                cargarDona(cantidadGastos)
-            }else{
-                val gastadosTextView = binding.TxtGastoTotal
-                gastadosTextView.setText("0,00$")
-
+                cargarDona()
             }
         }
     }
@@ -415,7 +410,7 @@ class DashboardFragment : Fragment(), OnItemClickListener {
         }
     }
 
-    private fun cargarDona(cantidadGastado: Double) {
+    private fun cargarDona() {
         gastosViewModel.getDisponible(usuarioId).observe(viewLifecycleOwner) { disponible ->
             gastosViewModel.getValorGastosMesCategoria(usuarioId, "Gastos Varios")
                 .observe(viewLifecycleOwner) { cantGastosVarios ->

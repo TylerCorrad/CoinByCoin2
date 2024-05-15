@@ -49,4 +49,7 @@ class GastosViewModel(application: Application) :AndroidViewModel(application) {
         repository.modificarGasto(id, categoria, valor, descripcion, fecha)
     }
 
+    fun getGastosPorFechas(idUsuario: Long,fechaInf: String,fechaSup: String): LiveData<List<Gasto>>{
+        return repository.getGastosPorFechas(idUsuario,fechaInf,fechaSup)
     }
+}

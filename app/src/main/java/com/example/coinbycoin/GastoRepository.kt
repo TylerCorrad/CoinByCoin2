@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 
 class GastoRepository(private val gastoDao: GastoDao) {
 
+
     fun getAllGastos(): LiveData<List<Gasto>> = gastoDao.getAll()
 
     fun insertGasto(gasto: Gasto){
@@ -23,5 +24,9 @@ class GastoRepository(private val gastoDao: GastoDao) {
     }
     fun modificarGasto(id: Long, categoria: String, valor: Double, descripcion: String, fecha: String){
         gastoDao.modificarGasto(id, categoria, valor, descripcion, fecha)
+    }
+
+    fun getGastosPorFechas(idUsuario: Long,fechaInf: String,fechaSup: String): LiveData<List<Gasto>>{
+        return gastoDao.getGastosPorFechas(idUsuario,fechaInf,fechaSup)
     }
 }
