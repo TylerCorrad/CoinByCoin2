@@ -11,7 +11,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.coinbycoin.databinding.FragmentPerfilBinding
@@ -22,9 +21,9 @@ import kotlinx.coroutines.withContext
 
 
 class Perfil : Fragment() {
-    private var usuarioId: Long = -1
     private lateinit var sharedViewModel: SharedViewModel
     private lateinit var usuarioViewModel: UsuarioViewModel
+
     // Declaración de la variable de enlace
     private var _binding: FragmentPerfilBinding? = null
 
@@ -46,13 +45,9 @@ class Perfil : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        // Obtener el usuarioId del argumento
-        val usuarioId = arguments?.getLong("usuario_id", -1)
-        Log.d("PerfilFragment", "Usuario ID: $usuarioId")
         usuarioViewModel = ViewModelProvider(this).get(UsuarioViewModel::class.java)
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-        sharedViewModel.idUsuario.observe(viewLifecycleOwner, Observer { usuarioId ->
+        sharedViewModel.idUsuario.observe(viewLifecycleOwner) { usuarioId ->
             if (usuarioId != null) {
                 usuarioViewModel.getUsuarioPorId(usuarioId).observe(viewLifecycleOwner) { usuario ->
                     usuario?.let {
@@ -65,7 +60,7 @@ class Perfil : Fragment() {
                     }
                 }
             }
-        })
+        }
 
 
         val usuarioInputField = view.findViewById<TextInputEditText>(R.id.txtinputUsuario)
@@ -147,6 +142,7 @@ class Perfil : Fragment() {
                     }
                 }
                 val intent = Intent(requireContext(), Login::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(intent)
                 requireActivity().finish()
                 dialog.dismiss() // Cierra el diálogo después de aceptar
@@ -159,66 +155,94 @@ class Perfil : Fragment() {
         }
 
         btnCambiarCon.setOnClickListener {
-            val dialogView = layoutInflater.inflate(R.layout.dialog_cambiar_con, null)
-            val conActual = dialogView.findViewById<TextInputEditText>(R.id.txtinputConActual)
-            val nuevaCon = dialogView.findViewById<TextInputEditText>(R.id.txtinputNuevaCon)
-            val confCon = dialogView.findViewById<TextInputEditText>(R.id.txtinputConfCon)
-            val tvError = dialogView.findViewById<TextView>(R.id.tvError)
-            var hayError = false
+            sharedViewModel.idUsuario.value?.let { usuarioId ->
 
-            val dialog = AlertDialog.Builder(requireContext())
-                .setView(dialogView)
-                .setPositiveButton("Confirmar") { dialog, _ ->
-                    val contrasena = conActual.text.toString()
-                    val nuevaContrasena = nuevaCon.text.toString()
-                    val confirmarContrasena = confCon.text.toString()
-                    val regex = Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}\$")
-
-                    // anadir if con Lógica para confirmar que la contraseña actual coincide con la del usuario
-                    if (!regex.matches(nuevaContrasena)) {
-                        tvError.text = getString(R.string.requerimientos_cont)
-                        tvError.visibility = View.VISIBLE
-                        val toast = Toast.makeText(requireContext(), "Requerimientos de contraseña no cumplidos", Toast.LENGTH_LONG) // in Activity
-                        toast.show()
-                        Log.d("MyApp", "Error: Requerimientos de contraseña no cumplidos")
-                        hayError = true
-                    } else if (nuevaContrasena != confirmarContrasena) {
-                        tvError.text = getString(R.string.las_contrase_as_no_coinciden)
-                        tvError.visibility = View.VISIBLE
-                        val toast = Toast.makeText(requireContext(), getString(R.string.las_contrase_as_no_coinciden), Toast.LENGTH_SHORT) // in Activity
-                        toast.show()
-                        Log.d("MyApp", "Error: Las contraseñas no coinciden")
-                        hayError = true
-                    } else if(!hayError){
-                        sharedViewModel.idUsuario.value?.let { usuarioId ->
-                            lifecycleScope.launch {
-                                withContext(Dispatchers.IO) {
-                                    usuarioViewModel.cambiarContrasena(nuevaContrasena,usuarioId)
+                usuarioViewModel.getUsuarioPorId(usuarioId).observe(viewLifecycleOwner) { usuario ->
+                    val dialogView = layoutInflater.inflate(R.layout.dialog_cambiar_con, null)
+                    val conActual = dialogView.findViewById<TextInputEditText>(R.id.txtinputConActual)
+                    val nuevaCon = dialogView.findViewById<TextInputEditText>(R.id.txtinputNuevaCon)
+                    val confCon = dialogView.findViewById<TextInputEditText>(R.id.txtinputConfCon)
+                    val tvError = dialogView.findViewById<TextView>(R.id.tvError)
+                    var hayError = false
+                    val dialog = AlertDialog.Builder(requireContext())
+                        .setView(dialogView)
+                        .setPositiveButton("Confirmar") { dialog, _ ->
+                            val contrasena = conActual.text.toString()
+                            val nuevaContrasena = nuevaCon.text.toString()
+                            val confirmarContrasena = confCon.text.toString()
+                            val regex = Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?]).{8,}\$")
+                            if (contrasena != usuario.contrasena) {
+                                hayError = true
+                                val toast = Toast.makeText(
+                                    requireContext(),
+                                    "La contraseña no es correcta",
+                                    Toast.LENGTH_LONG
+                                ) // in Activity
+                                toast.show()
+                            }
+                            if (!regex.matches(nuevaContrasena)) {
+                                tvError.text = getString(R.string.requerimientos_cont)
+                                tvError.visibility = View.VISIBLE
+                                val toast = Toast.makeText(
+                                    requireContext(),
+                                    "Requerimientos de contraseña no cumplidos",
+                                    Toast.LENGTH_LONG) // in Activity
+                                toast.show()
+                                Log.d("MyApp", "Error: Requerimientos de contraseña no cumplidos")
+                                        hayError = true
+                            } else if (nuevaContrasena != confirmarContrasena) {
+                                tvError.text =
+                                    getString(R.string.las_contrase_as_no_coinciden)
+                                tvError.visibility = View.VISIBLE
+                                val toast = Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.las_contrase_as_no_coinciden),
+                                    Toast.LENGTH_SHORT
+                                ) // in Activity
+                                toast.show()
+                                Log.d("MyApp", "Error: Las contraseñas no coinciden")
+                                hayError = true
+                            } else if (!hayError) {
+                                sharedViewModel.idUsuario.value?.let { usuarioId ->
+                                    lifecycleScope.launch {
+                                        withContext(Dispatchers.IO) {
+                                            usuarioViewModel.cambiarContrasena(
+                                                nuevaContrasena,
+                                                usuarioId
+                                            )
+                                        }
+                                    }
+                                }
+                                val toast = Toast.makeText(
+                                    requireContext(),
+                                    "la contraseña ha sido cambiada exitosamente",
+                                    Toast.LENGTH_SHORT
+                                ) // in Activity
+                                toast.show()
+                                Log.d(
+                                    "MyApp",
+                                    "La contraseña ha sido cambiada exitosamente"
+                                )
+                            }
+                        }
+                            .setNegativeButton("Cancelar") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                                .create()
+                            dialog.show()
+                            dialog.setOnDismissListener {
+                                if (hayError) {
+                                    hayError = false
                                 }
                             }
                         }
-                                    val toast = Toast.makeText(requireContext(), "la contraseña ha sido cambiada exitosamente", Toast.LENGTH_SHORT) // in Activity
-                        toast.show()
-                        Log.d("MyApp", "La contraseña ha sido cambiada exitosamente")
-                    }
-                }
-                .setNegativeButton("Cancelar") { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .create()
-
-            dialog.show()
-            dialog.setOnDismissListener {
-                if (hayError) {
-                    hayError = false
-                }
             }
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // Limpiar la referencia al enlace de datos para evitar fugas de memoria
-        _binding = null
-    }
+        override fun onDestroyView() {
+                super.onDestroyView()
+                // Limpiar la referencia al enlace de datos para evitar fugas de memoria
+                _binding = null
+        }
 }

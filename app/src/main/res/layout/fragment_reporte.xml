@@ -55,8 +55,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btonAdelanteSem"
-            android:layout_marginHorizontal="24dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginTop="16dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
             />
 
         <TextView
@@ -81,7 +83,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:gravity="center"
-            android:layout_marginVertical="16dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/texto_prueba"
             style="@style/TxtGrisPequenoItalic"
             />
@@ -132,8 +134,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btonAdelanteMes"
-            android:layout_marginHorizontal="24dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginTop="16dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
             />
 
         <TextView
@@ -159,7 +163,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:gravity="center"
-            android:layout_marginVertical="16dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/texto_prueba"
             style="@style/TxtGrisPequenoItalic"
             />
@@ -208,8 +212,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btonAdelanteAn"
-            android:layout_marginHorizontal="24dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginTop="16dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="8dp"
             />
 
 
@@ -236,7 +242,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:gravity="center"
-            android:layout_marginVertical="16dp"
+            android:layout_marginBottom="16dp"
             android:text="@string/texto_prueba"
             style="@style/TxtGrisPequenoItalic"
             />

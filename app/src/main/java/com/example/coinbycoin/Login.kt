@@ -1,10 +1,10 @@
 package com.example.coinbycoin
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.textfield.TextInputEditText
 
@@ -40,6 +40,7 @@ class Login : AppCompatActivity() {
         btnRegistrarse.setOnClickListener {
             val intent = Intent(this, Registro::class.java)
             startActivity(intent)
+            this.finish()
         }
     }
 }
