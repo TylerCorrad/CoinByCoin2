@@ -5,12 +5,13 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class Registro : AppCompatActivity() {
@@ -86,10 +87,12 @@ class Registro : AppCompatActivity() {
         Log.d("RegistroActivity", "iniciando insercion")
         usuarioViewModel.getUsuarioPorUsuario(usuario.usuario).observe(this) { usuarioExistente ->
             if (usuarioExistente != null) {
-                // Usuario ya existe en la base de datos
-                Log.d("RegistroActivity", "Usuario duplicado")
-                txtAdvertencia.text = getString(R.string.error_usuario_duplicado)
-            } else {
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(2000L) // Esperar la cantidad de tiempo especificada
+                    txtAdvertencia.text = getString(R.string.error_usuario_duplicado)
+                    Log.d("RegistroActivity", "Usuario duplicado")
+                }
+                } else {
                 Log.d("RegistroActivity", "Insertando nuevo usuario: $usuario")
                 // Usuario no existe en la base de datos, insertarlo
                 lifecycleScope.launch {
@@ -104,8 +107,7 @@ class Registro : AppCompatActivity() {
                         intent.putExtra("usuario_id", ultimoUsuarioId)
                         startActivity(intent)
                     } else {
-                        // Manejar el caso donde no se pudo obtener el ID del usuario
-                        txtAdvertencia.text = getString(R.string.error_al_obtener_el_id_del_usuario)
+                        Log.d("error","error con el id del usuario")
                     }
                 }
             }
