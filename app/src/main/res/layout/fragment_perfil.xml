@@ -29,7 +29,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/wrapperinputUsuario"
             style="@style/EstiloBordeAmarillo"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
@@ -64,7 +64,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/wrapperinputNombres"
             style="@style/EstiloBordeAmarillo"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
@@ -99,7 +99,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/wrapperinputApellidos"
             style="@style/EstiloBordeAmarillo"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
@@ -133,7 +133,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/wrapperinputDoc"
             style="@style/EstiloBordeAmarillo"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
@@ -167,7 +167,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/wrapperinputTel"
             style="@style/EstiloBordeAmarillo"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
@@ -200,7 +200,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/wrapperinputMail"
             style="@style/EstiloBordeAmarillo"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
