@@ -4,7 +4,7 @@ CoinbyCoin es una aplicación móvil desarrollada en Android Studio cuyo objetiv
 Figma con el prototipo de la aplicación: https://www.figma.com/file/qgx6PWhYO1YZ4VwTMtfYzC/Untitled?type=design&node-id=0%3A1&mode=design&t=ZNo1JdNkhJo3w1xb-1
 
 ## Estado del proyecto
-Actualmente, el proyecto se encuentra en estado de desarrollo. La sección de reporte está en construcción y no refleja el estado final de la aplicación.
+Actualmente, el proyecto se encuentra en estado de desarrollo. Faltan algunas funciones extra.
 
 ## Instrucciones de uso
 ### Registro e inicio de sesión
